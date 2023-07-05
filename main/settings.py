@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     #installed apps
     "account",
     "home",
+    "phonenumber_field",
+    "django_countries",
 ]
 
 MIDDLEWARE = [
@@ -75,6 +77,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'account.Account'
 
 WSGI_APPLICATION = "main.wsgi.application"
 
