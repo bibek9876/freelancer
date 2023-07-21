@@ -41,6 +41,7 @@ class Account(AbstractBaseUser):
     phone_number = PhoneNumberField(blank=True)
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
     username = models.CharField(verbose_name="Username", max_length=30, unique=True)
+    user_type = models.CharField(verbose_name="User type", max_length=30, blank=False, default="guest")
     sign_in_mode = models.CharField(max_length=30, blank=True)
     skills = ArrayField(models.CharField(max_length=200), default=[])
     country = CountryField()
