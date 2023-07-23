@@ -6,6 +6,7 @@
     {% csrf_token %}
     <div class="container">
     <form>
+        {{registration_form.user_type}}
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputFirstName4">First Name</label>

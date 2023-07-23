@@ -6,10 +6,12 @@ from account.models import Account
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=60, help_text="Required. Add a valid email address.")
-    
+    CHOICES = [('client','Client'),('freelancer','Freelancer')]
+    user_type = forms.CharField(label='Gender', widget=forms.RadioSelect(choices=CHOICES))
     class Meta:
         model = Account
         fields = (
+            "user_type",
             "email", 
             "username", 
             "first_name", 

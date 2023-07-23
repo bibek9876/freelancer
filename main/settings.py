@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "home",
     "phonenumber_field",
     "django_countries",
+    "job",
 ]
 
 MIDDLEWARE = [
