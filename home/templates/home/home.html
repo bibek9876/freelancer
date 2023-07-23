@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1> This is a home page </h1>
-    <hr>
-    <h3>{{some_string}}</h3>
-    <hr>
-
-    <p>
-        {% for string in list_of_string  %}
-            {{string}} <br>
-        {% endfor %}
-    </p>
+{% if request.user.user_type == "client" %}
+    <h1> This is a client home page </h1>
+{% elif request.user.user_type == "freelancer" %}
+    <h1> This is a freelancer home page </h1>
+{% else %}
+{% endif %}
+<h1> This is a home page </h1>
 {% endblock content %}

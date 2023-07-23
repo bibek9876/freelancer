@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from account.forms import RegistrationForm, UserLoginForm
-import pdb
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 

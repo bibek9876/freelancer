@@ -1,17 +1,14 @@
 from django.shortcuts import render
+import pdb
 
 # Create your views here.
 
 
 def home_page(request):
     context = {}
-    context["some_string"] = "Hi, this is my practice page."
     
-    list_of_strings = []
-    list_of_strings.append("First")
-    list_of_strings.append("Second")
-    list_of_strings.append("Third")
-    list_of_strings.append("Fourth")
-    
-    context["list_of_string"] = list_of_strings
+    user = request.user
+    if user.is_authenticated:
+        user_type = user.user_type
+        context['user_type'] = user_type
     return render(request, 'home/home.html', context)

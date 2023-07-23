@@ -4,21 +4,80 @@
 
 <form method="POST">
     {% csrf_token %}
-{% for field in registration_form%}
-    <p>
-        {{field.label_tag}}
-        {{field}}
-
-        {% if field.help_text %}
-            {{field.help_text}}
-        {% endif %}
-
+    <div class="container">
+    <form>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputFirstName4">First Name</label>
+                <input type="text" class="form-control" id="inputFirstName4" placeholder="First Name" name="first_name">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputLastName4">Last Name</label>
+                <input type="text" class="form-control" id="inputLastName4" placeholder="Last Name" name="last_name">
+            </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Email</label>
+            <input type="email" class="form-control" id="inputEmail4" placeholder="Email" name="email">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputUsername4">Username</label>
+            <input type="text" class="form-control" id="inputUsername4" placeholder="Username" name="username">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPhoneNumber">Phone Number</label>
+            <input type="tel" class="form-control" id="inputPhoneNumber" placeholder="Phone Number" name="phone_number" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputTitle">Title</label>
+            <select id="inputState" class="form-control" name = "title">
+                <option selected>Choose...</option>
+                <option>Mr.</option>
+                <option>Mrs.</option>
+                <option>Miss</option>
+              </select>
+          </div>
+          
+        <div class="form-group">
+          <label for="inputAddress">Country</label>
+          {{registration_form.country}}
+        </div>
+        </div>
+        <div class="form-group">
+            <label for="inputSkills">Skills</label>
+            <input type="text" class="form-control" id="inputSkills" placeholder="Skills" name="skills">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword4">Password</label>
+            <input type="password" class="form-control" id="inputPassword4" placeholder="Password" name="password1">
+        </div>
+        <div class="form-group">
+            <label for="inputPasswordConfirm">Password Confirmation</label>
+            <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Confirm Password" name="password2">
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck">
+            <label class="form-check-label" for="gridCheck">
+              Check me out
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+    </div>
+    {% for field in registration_form %}
+        <p>
         {% for error in field.errors %}
-            {{field.error}}
+            <p style="color: red">{{ error }}</p>
         {% endfor %}
-    </p>
-{%endfor%}
-<button type='submit'> Register </button>
+        </p>
+    {% endfor %}
+    {% if registration_form.non_field_errors %}
+    <div style="color: red">
+        <p>{{registration_form.non_field_errors}}</p>
+    </div>
+        
+    {% endif %}
 </form>
 
 {% endblock content %}
