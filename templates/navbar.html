@@ -30,6 +30,7 @@
 
         {% if request.user.user_type == "client" %}
             <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'post_job' %}>Post</a>
+            <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'view_job' %}>Show your jobs</a>
         {% endif %}
       </ul>
     </div>
