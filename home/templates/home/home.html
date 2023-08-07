@@ -1,11 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 {% if request.user.user_type == "client" %}
-    <h1> This is a client home page </h1>
+<div class="container-fluid">
+    {% for freelancer in freelancers %}
+        <div class="col-md">
+            <span>Name: {{freelancer.title}} {{freelancer.first_name}} {{freelancer.last_name}}</span> <br/>
+            <span>Skills: {{freelancer.skills}} </span><br/>
+            <span>Country: {{freelancer.country}} </span><br/>
+            {% comment %} <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'job_detail' job.id %}>More Details</a> {% endcomment %}
+        </div>  
+    {% endfor %}
+</div>
 {% elif request.user.user_type == "freelancer" %}
-    <h1> This is a freelancer home page </h1>
+    <div class="container-fluid">
+        {% for job in job_list %}
+            <div class="col-md">
+                <span>Title: {{job.job_title}}</span> <br/>
+                <span>Description: {{job.description}} </span><br/>
+                <span>Must be completed by: {{job.completion_time}} </span><br/>
+                <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'job_detail' job.id %}>More Details</a>
+            </div>  
+        {% endfor %}
+    </div>
 {% else %}
 {% endif %}
-<h1> This is a home page </h1>
 {% endblock content %}

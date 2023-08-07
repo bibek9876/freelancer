@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>{{job.job_title}}</p>
+    <p>{{job.hour}}</p>
+    <p>{{job.rate}}</p>
+    <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'apply_job' job.id %}>Apply</a>
+{% endblock content %}
+

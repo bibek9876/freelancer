@@ -6,7 +6,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href={% url 'home' %}>Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Features</a>
@@ -31,6 +31,8 @@
         {% if request.user.user_type == "client" %}
             <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'post_job' %}>Post</a>
             <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'view_job' %}>Show your jobs</a>
+        {% else %}
+          <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'view_job' %}>Available jobs</a>
         {% endif %}
       </ul>
     </div>

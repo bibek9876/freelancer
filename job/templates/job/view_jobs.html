@@ -5,13 +5,12 @@
     <h1>Posted jobs</h1>
     <div class="row">
             {% for job in jobs %}
-            <div class="col-md">
-                <span>Title: {{job.job_title}}</span> <br/>
-                <span>Description: {{job.description}} </span><br/>
-                <span>Rate: ${{job.rate}} </span><br/>
-                <span>Hour: {{job.hour}} </span><br/>
-                <span>Must be completed by: {{job.completion_time}} </span><br/>
-            </div>
+                <div class="col-md">
+                    <span>Title: {{job.job_title}}</span> <br/>
+                    <span>Description: {{job.description}} </span><br/>
+                    <span>Must be completed by: {{job.completion_time}} </span><br/>
+                    <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'job_detail' job.id %}>More Details</a>
+                </div>
             {% endfor %}
     </div>
 </div> 
