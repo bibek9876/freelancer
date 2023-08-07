@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from account.forms import RegistrationForm, UserLoginForm
 from django.views.decorators.csrf import csrf_exempt
+from account.models import Account
 # Create your views here.
 
 @csrf_exempt
@@ -51,3 +52,11 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('home')
+
+def view_user(request, user_id):
+    context = {}
+    user = request.user
+    if user.is_authenticated:
+        user_profile = Account.objects.get(id = user_id)
+    context['user_profile'] = user_profile
+    return render(request, 'account/view_profile.html', context)

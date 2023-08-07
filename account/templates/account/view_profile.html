@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='container'>
+        <div class='row'>
+            <div class="col-md">
+                <span>Name: {{user_profile.first_name}} {{user_profile.last_name}}</span> 
+                <br/>
+                <span>Country: {{user_profile.country}}</span>
+                <br/>
+                {% if user_profile.id == request.user.id %}
+                
+                    <a class="btn btn-outline-success my-2 my-sm-0" href="#">Update</a>
+                {% endif %}
+            </div>
+        </div>
+</div>
+
+{% endblock content %}

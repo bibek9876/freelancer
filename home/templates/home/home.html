@@ -3,14 +3,18 @@
 {% block content %}
 
 {% if request.user.user_type == "client" %}
-<div class="container-fluid">
+<div class="container">
+    <h2>Freelancers: </h2>
     {% for freelancer in freelancers %}
-        <div class="col-md">
+    <div class="row">
+        <div class="col-sm">
             <span>Name: {{freelancer.title}} {{freelancer.first_name}} {{freelancer.last_name}}</span> <br/>
-            <span>Skills: {{freelancer.skills}} </span><br/>
-            <span>Country: {{freelancer.country}} </span><br/>
-            {% comment %} <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'job_detail' job.id %}>More Details</a> {% endcomment %}
-        </div>  
+                <span>Skills: {{freelancer.skills}} </span><br/>
+                <span>Country: {{freelancer.country}} </span><br/>
+                <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'view_user' freelancer.id %}>More Details</a> 
+        </div>
+         
+    </div>  
     {% endfor %}
 </div>
 {% elif request.user.user_type == "freelancer" %}
