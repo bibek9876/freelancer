@@ -6,23 +6,25 @@
 <hr>
     <form method="POST">
         <div class="form-row">
+              <input type="text" name = "freelancer" class="form-control" value={{request.user.id}}>
+              <input type="text" name = "client" class="form-control" value={{client_id}}>
             <div class="form-group col-md-6">
               <label for="inputJobTitle">Rate</label>
-              <input type="text" name = "rate" class="form-control" id="inputJobTitle" placeholder="Rate">
+              <input type="text" name = "requested_rate" class="form-control" id="inputJobTitle" placeholder="Rate">
             </div>
             <div class="form-group col-md-6">
               <label for="inputRate">Hour</label>
-              <input type="integer" name = "hour" class="form-control" id="inputRate" placeholder="Hour">
+              <input type="integer" name = "requested_hour" class="form-control" id="inputRate" placeholder="Hour">
             </div>
             <div class="form-group col-md-6">
                 <label for="inputRate">Completion Time</label>
-                <input type="integer" name = "completion_time" class="form-control" id="inputRate" placeholder="Completion Time">
+                <input type="integer" name = "requested_completion_time" class="form-control" id="inputRate" placeholder="Completion Time">
               </div>    
             </div>
             <button type="submit" class="btn btn-primary">Bid</button>
     </form>
-    {% for job in post_job_form %}
-        {% for error in job.errors %}
+    {% for detail in bid_job %}
+        {% for error in detail.errors %}
         <p style="color: red">{{ error }}</p>
         {% endfor %}
 

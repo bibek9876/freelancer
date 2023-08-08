@@ -5,5 +5,6 @@
     <p>{{job.hour}}</p>
     <p>{{job.rate}}</p>
     <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'apply_job' job.id %}>Apply</a>
+    <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'bid_job' job.id %}>Bid</a>
 {% endblock content %}
 

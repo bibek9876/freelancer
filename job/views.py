@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from job.forms import PostJob
+from job.forms import PostJob, RequestBid
 from job.models import Job
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
@@ -68,3 +68,22 @@ def apply_job(request, job_id):
         context["post_job_form"] = form
         
     return render(request, 'job/apply_jobs.html', context)
+
+@csrf_exempt
+def bid_job(request, job_id):
+    context={}
+    job = Job.objects.get(id = job_id)
+    client_id = job.user_id
+    context['client_id'] = client_id
+    if request.POST:
+        form = RequestBid(request.POST)
+        # pdb.set_trace()
+        if form.is_valid():
+            form.save()
+            return redirect('view_job')
+        else:
+            context['bid_job'] = form
+    else:
+        form = RequestBid()
+        context['bid_job'] = form
+    return render(request, 'job/bid_job.html', context)
