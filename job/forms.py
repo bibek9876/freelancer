@@ -5,7 +5,7 @@ from job.models import Job, JobBid
 class PostJob(forms.ModelForm):
     class Meta:
         model =Job
-        fields = ('user','job_title', 'rate', 'hour', 'description', 'completion_time')
+        fields = ('user','job_title', 'image', 'rate', 'hour', 'description', 'completion_time', 'task_type')
         
 class RequestBid(forms.ModelForm):
     class Meta:

@@ -6,6 +6,9 @@
     <div class="row">
             {% for job in jobs %}
                 <div class="col-md">
+                    <div class="col-md-auto">
+                        <img class="card-img-top" src="{{job.image.url}}">
+                    </div>
                     <span>Title: {{job.job_title}}</span> <br/>
                     <span>Description: {{job.description}} </span><br/>
                     <span>Must be completed by: {{job.completion_time}} </span><br/>

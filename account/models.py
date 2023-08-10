@@ -3,8 +3,18 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.postgres.fields import ArrayField
 from django_countries.fields import CountryField
+from django.dispatch import receiver
+from django.db.models.signals import post_delete, pre_save
+from django.utils.text import slugify
+import datetime
 
 # Create your models here.
+
+def upload_location(instance, userid):
+    file_path = 'account/{userid}/profile/-{filename}'.format(
+        userid = str(instance.user.id), filename=datetime.datetime.now().timestamp
+    )
+    return upload_location
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -37,6 +47,7 @@ class MyAccountManager(BaseUserManager):
 class Account(AbstractBaseUser):
     first_name = models.CharField(verbose_name='First Name', max_length=30, blank=False)
     last_name = models.CharField(verbose_name='Last Name', max_length=30, blank=False)
+    profile_image = models.ImageField(upload_to=upload_location, null=True, blank = True)
     title = models.CharField(verbose_name='Title', max_length=30, blank=False)
     phone_number = PhoneNumberField(blank=True)
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
@@ -68,3 +79,13 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, app_label):
         return True
+    
+@receiver(post_delete, sender=Account)
+def submission_delete(sender, instance, **kwargs):
+    instance.image.delete(False)
+    
+# def pre_save_receiver(sender, instance, *args, **kwargs):
+#     if not instance.username:
+#         instance.username = slugify(instance.user.username + "-" + datetime.datetime.now().timestamp)
+        
+# pre_save.connect(pre_save_receiver, sender=Account)
