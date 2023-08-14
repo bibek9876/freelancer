@@ -14,7 +14,7 @@ def upload_location(instance, userid):
     file_path = 'account/{userid}/profile/-{filename}'.format(
         userid = str(instance.user.id), filename=datetime.datetime.now().timestamp
     )
-    return upload_location
+    return file_path
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -53,9 +53,11 @@ class Account(AbstractBaseUser):
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
     username = models.CharField(verbose_name="Username", max_length=30, unique=True)
     user_type = models.CharField(verbose_name="User type", max_length=30, blank=False, default="guest")
-    sign_in_mode = models.CharField(max_length=30, blank=True)
+    sign_in_mode = models.CharField(max_length=30, blank=True, default="normal")
     skills = ArrayField(models.CharField(max_length=200), default=[])
     country = CountryField()
+    bio = models.CharField(max_length=500, null=True, blank = True, default='I m a bachelor graduate from Islington college, Nepal acheiving 71 percentage overall and currently working as a backend developer using Ruby on Rails.')
+    languages = models.CharField(max_length=50, null=False, blank=False, default="English")
     last_login = models.DateTimeField(verbose_name="Last login", auto_now=True)
     date_joined = models.DateTimeField(verbose_name="Date joined", auto_now_add=True)
     is_admin = models.BooleanField(default=False)

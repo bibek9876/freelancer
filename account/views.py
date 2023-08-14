@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from account.forms import RegistrationForm, UserLoginForm
+from account.forms import RegistrationForm, UserLoginForm, AccountupdateForm
 from django.views.decorators.csrf import csrf_exempt
 from account.models import Account
 # Create your views here.
@@ -60,3 +60,28 @@ def view_user(request, user_id):
         user_profile = Account.objects.get(id = user_id)
     context['user_profile'] = user_profile
     return render(request, 'account/view_profile.html', context)
+
+def update_profile(request, user_id):
+    context = {}
+    user = Account.objects.get(id=user_id)
+    if request.POST:
+        if request.POST['country'] == "":
+            country = user.country.code
+        else:
+            country = request.POST['country']
+        form = AccountupdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            
+            obj.country = country
+            obj.save()
+            context["success_message"] = "Updated Succcessfully"
+            form = AccountupdateForm()
+            return redirect('view_user', user_id)
+        else:
+            context['form'] = form
+    else:
+        form = AccountupdateForm()
+        context['form'] = form
+    context["user"] = user
+    return render(request, 'account/update_profile.html', context)

@@ -7,11 +7,23 @@
             <div class="col-md">
                 <span>Name: {{user_profile.first_name}} {{user_profile.last_name}}</span> 
                 <br/>
-                <span>Country: {{user_profile.country}}</span>
+                <span>Country: {{user_profile.country.name}}</span>
                 <br/>
+                <hr>
+                <h4> Biography: </h4>
+                <span> {{user_profile.bio}}</span>
+                <hr>
+                <h4> Skills: </h4>
+                <span> {% for skill in user_profile.skills %}
+                            {{skill}}
+                        {% endfor %}</span>
+                <hr>
+                <h4> Languages: </h4>
+                <span> {{user_profile.languages}}</span>
+                <hr>
                 {% if user_profile.id == request.user.id %}
                 
-                    <a class="btn btn-outline-success my-2 my-sm-0" href="#">Update</a>
+                    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_profile' user_profile.id%}">Update</a>
                 {% endif %}
             </div>
         </div>

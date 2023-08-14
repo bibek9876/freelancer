@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
 from account.models import Account
 # Create your views here.
-import pdb
 
 def must_authenticate(request):
     context = {}
@@ -25,7 +24,6 @@ def post_job(request):
             form = PostJob(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
-                # pdb.set_trace()
                 # user = user_id
                 # obj.save()
                 # form = PostJob()
@@ -45,7 +43,6 @@ def view_jobs(request):
             jobs = Job.objects.filter(user_id=user.id)
         else:
             jobs = Job.objects.all()
-        # pdb.set_trace()
     else:
         jobs = Job.objects.all()
     context['jobs'] = jobs
@@ -71,7 +68,6 @@ def apply_job(request, job_id):
     
     get_job = Job.objects.get(id = job_id)
     form = PostJob(request.POST)
-    # pdb.set_trace()
     if form.is_valid():
         get_job.rate = request.POST['rate']
         get_job.hour = request.POST['hour']
@@ -91,7 +87,6 @@ def bid_job(request, job_id):
     context['client_id'] = client_id
     if request.POST:
         form = RequestBid(request.POST)
-        # pdb.set_trace()
         if form.is_valid():
             form.save()
             return redirect('view_job')

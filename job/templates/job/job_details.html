@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div>
+    <img class="card-auto-top" src="{{job.image.url}}">
+</div>
     <p>{{job.job_title}}</p>
     <p>{{job.hour}}</p>
     <p>{{job.rate}}</p>

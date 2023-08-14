@@ -19,6 +19,8 @@ class RegistrationForm(UserCreationForm):
             "title", 
             "skills", 
             "country", 
+            "bio", 
+            "languages", 
             "phone_number",
             "password1", 
             "password2"
@@ -38,3 +40,13 @@ class UserLoginForm(forms.ModelForm):
             password = self.cleaned_data['password']
             if not authenticate(email = email, password = password):
                 raise forms.ValidationError('Email and password does not match.')
+            
+class AccountupdateForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = (
+            'first_name',
+            'last_name',
+            'country',
+            'bio',
+        )
