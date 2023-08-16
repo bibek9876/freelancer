@@ -41,3 +41,11 @@ class JobBid(models.Model):
     requested_rate = models.IntegerField()
     requested_hour = models.DecimalField(max_digits=5, decimal_places=2)
     requested_completion_time = models.CharField(max_length=50)
+    
+class AggerdJob(models.Model):
+    freelancer = models.ForeignKey(Account, null = True, related_name='worker', on_delete = models.CASCADE)
+    client = models.ForeignKey(Account, null = True, related_name='employer', on_delete = models.CASCADE)
+    agreed_rate = models.IntegerField()
+    agreed_hour = models.DecimalField(max_digits=5, decimal_places=2)
+    agreed_completion_time = models.CharField(max_length=50)
+    

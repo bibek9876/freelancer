@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 <div class='container'>
+    {% if user_profile.profile_image %}
+        <img class="img-fluid mx-auto d-block" src="{{user_profile.profile_image.url}}">
+    {% else %}
+        <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
+    {% endif %}
+        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Update Picture</a>
         <div class='row'>
             <div class="col-md">
                 <span>Name: {{user_profile.first_name}} {{user_profile.last_name}}</span> 

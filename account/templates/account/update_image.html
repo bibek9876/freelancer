@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="first_name">{{user.first_name}}</input>
+    {% if user.profile_image %}
+        <img class="img-fluid mx-auto d-block" src="{{user.profile_image.url}}">
+    {% else %}
+        <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
+    {% endif %}
+
+    <input type="file" id="avatar" name="profile_image" required/>
+    <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Submit</button>
+</form>
+
+{% for error in form %}
+    {{error}}
+{% endfor %}
+{% endblock content %}

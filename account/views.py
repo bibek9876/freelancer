@@ -1,6 +1,8 @@
+import os
+import pdb
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from account.forms import RegistrationForm, UserLoginForm, AccountupdateForm
+from account.forms import RegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm
 from django.views.decorators.csrf import csrf_exempt
 from account.models import Account
 # Create your views here.
@@ -60,6 +62,27 @@ def view_user(request, user_id):
         user_profile = Account.objects.get(id = user_id)
     context['user_profile'] = user_profile
     return render(request, 'account/view_profile.html', context)
+
+def update_profile_image(request, user_id):
+    context = {}
+    user = Account.objects.get(id=user_id)
+    context['user'] = user
+    # pdb.set_trace()
+    if request.POST:
+        form = ImageUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            if user.profile_image:
+                image_path = user.profile_image.path
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+                form.save()
+            else:
+                form.save()
+                return redirect('view_user', user_id)
+        else:
+            form = ImageUpdateForm()
+            context['form'] = form
+    return render(request, 'account/update_image.html')
 
 def update_profile(request, user_id):
     context = {}

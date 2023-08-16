@@ -1,3 +1,6 @@
+import pathlib
+import pdb
+from tkinter import Image
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
@@ -7,12 +10,13 @@ from django.dispatch import receiver
 from django.db.models.signals import post_delete, pre_save
 from django.utils.text import slugify
 import datetime
+from django_resized import ResizedImageField
 
 # Create your models here.
 
-def upload_location(instance, userid):
+def upload_location(instance, filename):
     file_path = 'account/{userid}/profile/-{filename}'.format(
-        userid = str(instance.user.id), filename=datetime.datetime.now().timestamp
+        userid = str(instance.id), filename=str(datetime.datetime.now().timestamp()) + pathlib.Path(filename).suffix
     )
     return file_path
 
@@ -47,7 +51,7 @@ class MyAccountManager(BaseUserManager):
 class Account(AbstractBaseUser):
     first_name = models.CharField(verbose_name='First Name', max_length=30, blank=False)
     last_name = models.CharField(verbose_name='Last Name', max_length=30, blank=False)
-    profile_image = models.ImageField(upload_to=upload_location, null=True, blank = True)
+    profile_image = ResizedImageField(upload_to=upload_location, null=True, blank = True)
     title = models.CharField(verbose_name='Title', max_length=30, blank=False)
     phone_number = PhoneNumberField(blank=True)
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
@@ -64,6 +68,7 @@ class Account(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
 
 
     USERNAME_FIELD = 'email'

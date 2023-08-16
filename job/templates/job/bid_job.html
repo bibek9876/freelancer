@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<h2 for="inputJobTitle">{{job.job_title}}</h2>
+<h2 for="inputJobTitle">Title: {{job.job_title}}</h2>
+<img class="img-fluid mx-auto d-block" src="{{job.image.url}}">
 <hr>
     <form method="POST">
         <div class="form-row">
@@ -10,15 +11,15 @@
               <input type="text" name = "client" class="form-control" value={{client_id}}>
             <div class="form-group col-md-6">
               <label for="inputJobTitle">Rate</label>
-              <input type="text" name = "requested_rate" class="form-control" id="inputJobTitle" placeholder="Rate">
+              <input type="text" name = "requested_rate" class="form-control" id="inputJobTitle" placeholder="Rate" value={{job.rate}}>
             </div>
             <div class="form-group col-md-6">
               <label for="inputRate">Hour</label>
-              <input type="integer" name = "requested_hour" class="form-control" id="inputRate" placeholder="Hour">
+              <input type="integer" name = "requested_hour" class="form-control" id="inputRate" placeholder="Hour" value={{job.hour}}>
             </div>
             <div class="form-group col-md-6">
                 <label for="inputRate">Completion Time</label>
-                <input type="integer" name = "requested_completion_time" class="form-control" id="inputRate" placeholder="Completion Time">
+                <input type="integer" name = "requested_completion_time" class="form-control" id="inputRate" placeholder="Completion Time" value={{job.completion_time}}>
               </div>    
             </div>
             <button type="submit" class="btn btn-primary">Bid</button>

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "django_countries",
     "job",
+    "notification",
 ]
 
 MIDDLEWARE = [
@@ -141,7 +142,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATICFILES_DIR = [
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'media'),
 ]

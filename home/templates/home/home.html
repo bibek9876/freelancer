@@ -19,14 +19,19 @@
 </div>
 {% elif request.user.user_type == "freelancer" %}
     <div class="container-fluid">
+        <div class="row">
         {% for job in job_list %}
             <div class="col-md">
+                <div class="col-md-auto">
+                    <img class="card-img-top" src="{{job.image.url}}">
+                </div>
                 <span>Title: {{job.job_title}}</span> <br/>
                 <span>Description: {{job.description}} </span><br/>
                 <span>Must be completed by: {{job.completion_time}} </span><br/>
                 <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'job_detail' job.id %}>More Details</a>
             </div>  
         {% endfor %}
+        </div>
     </div>
 {% else %}
 {% endif %}

@@ -1,9 +1,13 @@
+import pdb
 from django.shortcuts import render, redirect, get_object_or_404
-from job.forms import PostJob, RequestBid
-from job.models import Job
+from job.forms import PostJob, RequestBid, AcceptBid
+from job.models import Job, JobBid, AggerdJob
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
 from account.models import Account
+from notification.models import Notification
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def must_authenticate(request):
@@ -57,6 +61,7 @@ def job_details(request, job_id):
     context["job"] = job_detail
     return render(request, 'job/job_details.html', context)
 
+@login_required
 @csrf_exempt
 def apply_job(request, job_id):
     context = {}
@@ -78,17 +83,27 @@ def apply_job(request, job_id):
         context["post_job_form"] = form
         
     return render(request, 'job/apply_jobs.html', context)
-
+@login_required
 @csrf_exempt
 def bid_job(request, job_id):
     context={}
     job = Job.objects.get(id = job_id)
     client_id = job.user_id
     context['client_id'] = client_id
+    context['job'] = job
+    notification =Notification.objects.all().order_by("-id")[0]
     if request.POST:
         form = RequestBid(request.POST)
         if form.is_valid():
             form.save()
+            job_bid_id = JobBid.objects.all().order_by("-id")[0].id
+            username = request.user.username
+            sender = request.user.id
+            receiver = client_id
+            message = "{} has applied a bid to a task {}.".format(username,job.job_title)
+            link = reverse('accept_bid', args=[str(job_bid_id), str(notification.id+1)])
+            notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+            notification.save()
             return redirect('view_job')
         else:
             context['bid_job'] = form
@@ -96,3 +111,19 @@ def bid_job(request, job_id):
         form = RequestBid()
         context['bid_job'] = form
     return render(request, 'job/bid_job.html', context)
+
+@login_required
+def accept_bid(request, job_bid_id, notification_id):
+    context={}
+    notification = Notification.objects.get(id = notification_id)
+    if request.user.user_type == "client" and notification.read == False:
+        notification.read = True
+        notification.save()
+    bid_data = JobBid.objects.get(id=job_bid_id)
+    
+    if request.POST:
+        form = AcceptBid(request.POST)
+        if form.is_valid():
+            pass
+    context['bid_data'] = bid_data
+    return render(request, 'job/accept_bid.html', context)
