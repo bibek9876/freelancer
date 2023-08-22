@@ -1,5 +1,4 @@
 import os
-import pdb
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from account.forms import RegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm
@@ -67,7 +66,6 @@ def update_profile_image(request, user_id):
     context = {}
     user = Account.objects.get(id=user_id)
     context['user'] = user
-    # pdb.set_trace()
     if request.POST:
         form = ImageUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():

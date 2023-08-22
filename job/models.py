@@ -38,13 +38,15 @@ def submission_delete(sender, instance, **kwargs):
 class JobBid(models.Model):
     freelancer = models.ForeignKey(Account, null = True, related_name='freelancer', on_delete = models.CASCADE)
     client = models.ForeignKey(Account, null = True, related_name='client', on_delete = models.CASCADE)
+    job = models.ForeignKey(Job, null = True, related_name='jobbid', on_delete = models.CASCADE)
     requested_rate = models.IntegerField()
     requested_hour = models.DecimalField(max_digits=5, decimal_places=2)
     requested_completion_time = models.CharField(max_length=50)
     
-class AggerdJob(models.Model):
+class AgreedJob(models.Model):
     freelancer = models.ForeignKey(Account, null = True, related_name='worker', on_delete = models.CASCADE)
     client = models.ForeignKey(Account, null = True, related_name='employer', on_delete = models.CASCADE)
+    job = models.ForeignKey(Job, null = True, related_name='job', on_delete = models.CASCADE)
     agreed_rate = models.IntegerField()
     agreed_hour = models.DecimalField(max_digits=5, decimal_places=2)
     agreed_completion_time = models.CharField(max_length=50)

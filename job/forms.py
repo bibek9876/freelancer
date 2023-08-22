@@ -1,6 +1,6 @@
 from django import forms
 
-from job.models import Job, JobBid
+from job.models import Job, JobBid, AgreedJob
 
 class PostJob(forms.ModelForm):
     class Meta:
@@ -14,5 +14,5 @@ class RequestBid(forms.ModelForm):
         
 class AcceptBid(forms.ModelForm):
     class Meta:
-        model = Job
-        fields = ('rate', 'hour', 'completion_time',)
+        model = AgreedJob
+        fields = ('agreed_rate', 'agreed_hour', 'agreed_completion_time',)

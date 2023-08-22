@@ -1,5 +1,4 @@
 import pathlib
-import pdb
 from tkinter import Image
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager

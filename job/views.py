@@ -1,7 +1,6 @@
-import pdb
 from django.shortcuts import render, redirect, get_object_or_404
 from job.forms import PostJob, RequestBid, AcceptBid
-from job.models import Job, JobBid, AggerdJob
+from job.models import Job, JobBid, AgreedJob
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
 from account.models import Account
@@ -91,17 +90,23 @@ def bid_job(request, job_id):
     client_id = job.user_id
     context['client_id'] = client_id
     context['job'] = job
-    notification =Notification.objects.all().order_by("-id")[0]
+    if Notification.objects.all().count() > 0:
+        notification = Notification.objects.all().order_by("-id")[0]
+        notification_count = notification.id+1
+    else:
+        notification_count = 1
     if request.POST:
         form = RequestBid(request.POST)
         if form.is_valid():
-            form.save()
+            a = form.save(commit=False)
+            a.job_id = job_id
+            a.save()
             job_bid_id = JobBid.objects.all().order_by("-id")[0].id
             username = request.user.username
             sender = request.user.id
             receiver = client_id
             message = "{} has applied a bid to a task {}.".format(username,job.job_title)
-            link = reverse('accept_bid', args=[str(job_bid_id), str(notification.id+1)])
+            link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
             notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
             notification.save()
             return redirect('view_job')
@@ -113,8 +118,11 @@ def bid_job(request, job_id):
     return render(request, 'job/bid_job.html', context)
 
 @login_required
-def accept_bid(request, job_bid_id, notification_id):
+@csrf_exempt
+def view_bid(request, job_bid_id, notification_id):
     context={}
+    query = JobBid.objects.raw('SELECT * from job_jobbid jb join job_job j on jb.job_id = j.id;')
+    job_title = query[0].job_title
     notification = Notification.objects.get(id = notification_id)
     if request.user.user_type == "client" and notification.read == False:
         notification.read = True
@@ -124,6 +132,25 @@ def accept_bid(request, job_bid_id, notification_id):
     if request.POST:
         form = AcceptBid(request.POST)
         if form.is_valid():
-            pass
+            #saving accepted jobs
+            a = form.save(commit = False)
+            a.client_id = notification.receiver_id
+            a.freelancer_id = notification.sender_id
+            a.job_id = bid_data.job_id
+            a.save()
+            
+            #saving notification for freelancer
+            count = Notification.objects.all().order_by("-id")[0]
+            notification_count = count.id+1
+            sender = request.user.id
+            receiver = notification.sender_id
+            message = "{} has approved your bid on a task {}.".format(request.user.username, job_title)
+            link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
+            notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+            notification.save()
+            return redirect('view_job')
+        else:
+            form = AcceptBid()
+            context['form'] = form
     context['bid_data'] = bid_data
-    return render(request, 'job/accept_bid.html', context)
+    return render(request, 'job/view_bid.html', context)
