@@ -23,6 +23,7 @@ class Job(models.Model):
     hour = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(max_length=600)
     completion_time = models.CharField(max_length=50)
+    job_status = models.CharField(max_length=50, default="not assigned")
     
     
 @receiver(post_delete, sender=Job)
@@ -51,3 +52,8 @@ class AgreedJob(models.Model):
     agreed_hour = models.DecimalField(max_digits=5, decimal_places=2)
     agreed_completion_time = models.CharField(max_length=50)
     
+class RejectionReason(models.Model):
+    reason = models.CharField(max_length=500, null=False, blank=False)
+    freelancer = models.ForeignKey(Account, null = True, related_name='freelancer1', on_delete = models.CASCADE)
+    freelancer = models.ForeignKey(Account, null = True, related_name='client1', on_delete = models.CASCADE)
+    job = models.ForeignKey(Job, null=False, related_name="job1", on_delete=models.CASCADE)

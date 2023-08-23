@@ -19,6 +19,13 @@
 </div>
 {% elif request.user.user_type == "freelancer" %}
     <div class="container-fluid">
+        <form action="{% url 'search_job' %}" method="GET">
+            <div class="form-group col-md-6">
+                <label for="inputJobTitle">Rate</label>
+                <input type="text" name = "query" class="form-control" id="inputJobTitle" placeholder="Type keywords...." >
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
         <div class="row">
         {% for job in job_list %}
             <div class="col-md">

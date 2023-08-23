@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST">
+    <div class="form-row">
+        <input type="hidden" name = "freelancer" class="form-control" value={{request.user.id}}>
+        {% comment %} <input type="text" name = "client" class="form-control" value={{client_id}}> {% endcomment %}
+        <div class="form-group col-md-6">
+          <label for="inputJobTitle">Reason for rejecting</label>
+          <textarea type="text" rows="10" name = "reason" class="form-control" id="inputJobTitle" placeholder="Reason" required></textarea>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock content %}

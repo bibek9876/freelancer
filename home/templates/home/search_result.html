@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for result in results %}
+
+<img src="{{result.image.url}}">
+{{result.job_title}}
+{{result.rate}}
+
+{% endfor %}
+
+{% endblock content %}

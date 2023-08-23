@@ -16,3 +16,4 @@ class AcceptBid(forms.ModelForm):
     class Meta:
         model = AgreedJob
         fields = ('agreed_rate', 'agreed_hour', 'agreed_completion_time',)
+        

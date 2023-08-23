@@ -1,3 +1,4 @@
+import pdb
 from django.shortcuts import render, redirect, get_object_or_404
 from job.forms import PostJob, RequestBid, AcceptBid
 from job.models import Job, JobBid, AgreedJob
@@ -7,6 +8,9 @@ from account.models import Account
 from notification.models import Notification
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+
+from django.core.management.color import no_style
+from django.db import connection
 # Create your views here.
 
 def must_authenticate(request):
@@ -43,11 +47,11 @@ def view_jobs(request):
     user = request.user
     if user.is_authenticated:
         if user.user_type == "client":
-            jobs = Job.objects.filter(user_id=user.id)
+            jobs = Job.objects.filter(user_id=user.id).filter(job_status="not assigned")
         else:
-            jobs = Job.objects.all()
+            jobs = Job.objects.filter(job_status="not assigned")
     else:
-        jobs = Job.objects.all()
+        jobs = Job.objects.filter(job_status="not assigned")
     context['jobs'] = jobs
     return render(request, 'job/view_jobs.html', context)
 
@@ -94,6 +98,10 @@ def bid_job(request, job_id):
         notification = Notification.objects.all().order_by("-id")[0]
         notification_count = notification.id+1
     else:
+        sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Notification])
+        with connection.cursor() as cursor:
+            for sql in sequence_sql:
+                cursor.execute(sql)
         notification_count = 1
     if request.POST:
         form = RequestBid(request.POST)
@@ -121,36 +129,60 @@ def bid_job(request, job_id):
 @csrf_exempt
 def view_bid(request, job_bid_id, notification_id):
     context={}
-    query = JobBid.objects.raw('SELECT * from job_jobbid jb join job_job j on jb.job_id = j.id;')
-    job_title = query[0].job_title
-    notification = Notification.objects.get(id = notification_id)
-    if request.user.user_type == "client" and notification.read == False:
-        notification.read = True
-        notification.save()
     bid_data = JobBid.objects.get(id=job_bid_id)
-    
-    if request.POST:
-        form = AcceptBid(request.POST)
-        if form.is_valid():
-            #saving accepted jobs
-            a = form.save(commit = False)
-            a.client_id = notification.receiver_id
-            a.freelancer_id = notification.sender_id
-            a.job_id = bid_data.job_id
-            a.save()
-            
-            #saving notification for freelancer
-            count = Notification.objects.all().order_by("-id")[0]
-            notification_count = count.id+1
-            sender = request.user.id
-            receiver = notification.sender_id
-            message = "{} has approved your bid on a task {}.".format(request.user.username, job_title)
-            link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
-            notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+    job_id = bid_data.job_id
+    agreed_job = AgreedJob.objects.filter(job_id=job_id)
+    if agreed_job.count() < 1:
+        query = JobBid.objects.raw('SELECT * from job_jobbid jb join job_job j on jb.job_id = j.id;')
+        job_title = query[0].job_title
+        notification = Notification.objects.get(id = notification_id)
+        if request.user.user_type == "client" and notification.read == False:
+            notification.read = True
             notification.save()
-            return redirect('view_job')
-        else:
-            form = AcceptBid()
-            context['form'] = form
+        #Approving jobs
+        if request.POST:
+            form = AcceptBid(request.POST)
+            job = Job.objects.get(id=job_id)
+            if form.is_valid():
+                #saving accepted jobs
+                a = form.save(commit = False)
+                a.client_id = notification.receiver_id
+                a.freelancer_id = notification.sender_id
+                a.job_id = bid_data.job_id
+                a.save()
+                
+                #changing status in job table
+                job.job_status = "assigned"
+                job.save()
+                
+                #saving notification for freelancer
+                count = Notification.objects.all().order_by("-id")[0]
+                notification_count = count.id+1
+                sender = request.user.id
+                receiver = notification.sender_id
+                message = "{} has approved your bid on a task {}.".format(request.user.username, job_title)
+                link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
+                notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+                notification.save()
+                return redirect('view_job')
+            else:
+                form = AcceptBid()
+                context['form'] = form
+    else:
+        return redirect('view_job')
+    
     context['bid_data'] = bid_data
+    context['job_bid_id'] = job_bid_id
     return render(request, 'job/view_bid.html', context)
+
+@csrf_exempt
+def reject_bid(request, job_bid_id, freelancer_id):
+    context={}
+    if request.method == "POST":
+        reason = request.POST['reason']
+    return render(request, 'job/reject_bid.html', context)
+
+@csrf_exempt
+def search_job(request):
+    context = {}
+    result = Job.objects.filter(body_text__search="cheese")

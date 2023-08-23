@@ -20,7 +20,7 @@
           </div>    
         </div>
         <button type="submit" class="btn btn-primary">Accept</button>
-        <a class="btn btn-primary" href="#"> Reject</a>
+        <a class="btn btn-primary" href="{% url 'reject_bid' job_bid_id bid_data.freelancer_id %}"> Reject</a>
 </form>
 
 {% endblock content %}
