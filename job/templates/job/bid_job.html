@@ -7,8 +7,8 @@
 <hr>
     <form method="POST">
         <div class="form-row">
-              <input type="text" name = "freelancer" class="form-control" value={{request.user.id}}>
-              <input type="text" name = "client" class="form-control" value={{client_id}}>
+              <input type="hidden" name = "freelancer" class="form-control" value={{request.user.id}}>
+              <input type="hidden" name = "client" class="form-control" value={{client_id}}>
             <div class="form-group col-md-6">
               <label for="inputJobTitle">Rate</label>
               <input type="text" name = "requested_rate" class="form-control" id="inputJobTitle" placeholder="Rate" value={{job.rate}}>

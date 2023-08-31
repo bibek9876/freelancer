@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<form action="{% url 'search_job' %}" method="GET">
+    <div class="form-group col-md-6">
+        <label for="inputJobTitle">Rate</label>
+        <input type="text" name = "query" class="form-control" id="inputJobTitle" placeholder="Type keywords...." >
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
 {% for result in results %}
 
 <img src="{{result.image.url}}">

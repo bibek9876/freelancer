@@ -4,10 +4,8 @@ from django.contrib.auth import authenticate
 
 from account.models import Account
 
-class RegistrationForm(UserCreationForm):
+class FreelancerRegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=60, help_text="Required. Add a valid email address.")
-    CHOICES = [('client','Client'),('freelancer','Freelancer')]
-    user_type = forms.CharField(label='Gender', widget=forms.RadioSelect(choices=CHOICES))
     class Meta:
         model = Account
         fields = (

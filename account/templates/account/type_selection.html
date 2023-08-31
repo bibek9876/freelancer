@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="GET">
+<input type="radio" id="user_type" name="user_type" value="client">
+<label for="user_type">Client</label><br>
+<input type="radio" id="user_type" name="user_type" value="freelancer">
+<label for="user_type">freelancer</label><br>
+<input type="submit" value="Submit">
+</form>
+{% endblock content %}

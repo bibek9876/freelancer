@@ -1,29 +1,41 @@
 import os
+import pdb
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from account.forms import RegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm
+from account.forms import FreelancerRegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm
 from django.views.decorators.csrf import csrf_exempt
 from account.models import Account
 # Create your views here.
 
-@csrf_exempt
-def user_registration(request):
+
+def type_selection(request):
     context = {}
-    if request.POST:
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get('password1')
-            account = authenticate(email = email, password = raw_password)
-            login(request, account)
-            return redirect('home')
-        else:
-            context['registration_form'] = form
+    if request.GET:
+        user_type = request.GET['user_type']
+        return redirect('user_registration', user_type)
+    return render(request, 'account/type_selection.html', context)
+
+@csrf_exempt
+def user_registration(request, user_type):
+    context = {}
+    if user_type == "client":
+        return render(request, 'account/client_register.html', context)
     else:
-        form = RegistrationForm()
-        context['registration_form'] = form
-    return render(request, 'account/register.html', context)
+        if request.POST:
+            form = FreelancerRegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                email = form.cleaned_data.get('email')
+                raw_password = form.cleaned_data.get('password1')
+                account = authenticate(email = email, password = raw_password)
+                login(request, account)
+                return redirect('home')
+            else:
+                context['registration_form'] = form
+        else:
+            form = FreelancerRegistrationForm()
+            context['registration_form'] = form
+        return render(request, 'account/freelancer_register.html', context)
 
 @csrf_exempt
 def user_login(request):

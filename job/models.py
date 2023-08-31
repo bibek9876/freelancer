@@ -1,3 +1,4 @@
+import pdb
 from django.db import models
 from account.models import Account
 from django.utils.text import slugify
@@ -13,7 +14,28 @@ def upload_location(instance, filename):
         job_id=str(instance.user.id), filename= str(datetime.datetime.now().timestamp()) + pathlib.Path(filename).suffix
     )
     return file_path
-    
+
+def category_upload_location(instance, filename):
+    #Creating new id for naming of a folder
+    if not instance.id:
+        Model = instance.__class__
+        new_id=None
+        try:
+            new_id = Model.objects.order_by("id").last().id
+            if new_id:
+                new_id += 1
+            else:
+                pass
+        except:
+            new_id=1
+    else:
+        new_id = instance.id
+    #getting a file path
+    file_path = 'category/{category_id}/-{filename}'.format(
+        category_id=str(new_id), filename= str(datetime.datetime.now().timestamp()) + pathlib.Path(filename).suffix
+    )
+    return file_path
+
 class Job(models.Model):
     user = models.ForeignKey(Account, verbose_name = "user id", on_delete = models.CASCADE)
     task_type = models.CharField(max_length=50, null=False, default="IT")
@@ -24,17 +46,13 @@ class Job(models.Model):
     description = models.TextField(max_length=600)
     completion_time = models.CharField(max_length=50)
     job_status = models.CharField(max_length=50, default="not assigned")
+    created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     
 @receiver(post_delete, sender=Job)
 def submission_delete(sender, instance, **kwargs):
     instance.image.delete(False)
     
-# def pre_save_receiver(sender, instance, *args, **kwargs):
-#     if not instance.unique_field:
-#         instance.unique_field = slugify(instance.user.username + "-" + datetime.datetime.now().timestamp)
-        
-# pre_save.connect(pre_save_receiver, sender=Job)
     
 class JobBid(models.Model):
     freelancer = models.ForeignKey(Account, null = True, related_name='freelancer', on_delete = models.CASCADE)
@@ -43,6 +61,7 @@ class JobBid(models.Model):
     requested_rate = models.IntegerField()
     requested_hour = models.DecimalField(max_digits=5, decimal_places=2)
     requested_completion_time = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, default="not reviewed")
     
 class AgreedJob(models.Model):
     freelancer = models.ForeignKey(Account, null = True, related_name='worker', on_delete = models.CASCADE)
@@ -55,5 +74,16 @@ class AgreedJob(models.Model):
 class RejectionReason(models.Model):
     reason = models.CharField(max_length=500, null=False, blank=False)
     freelancer = models.ForeignKey(Account, null = True, related_name='freelancer1', on_delete = models.CASCADE)
-    freelancer = models.ForeignKey(Account, null = True, related_name='client1', on_delete = models.CASCADE)
+    client = models.ForeignKey(Account, null = True, related_name='client1', on_delete = models.CASCADE)
     job = models.ForeignKey(Job, null=False, related_name="job1", on_delete=models.CASCADE)
+    
+
+class JobCategories(models.Model):
+    category_name = models.CharField(max_length=30, blank=False, null=False)
+    image =  ResizedImageField(upload_to=category_upload_location, null=True, blank=True)
+    slug = models.SlugField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+@receiver(post_delete, sender=JobCategories)
+def submission_delete(sender, instance, **kwargs):
+    instance.image.delete(False)

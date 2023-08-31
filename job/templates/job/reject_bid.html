@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="POST">
+<form method="POST" >
     <div class="form-row">
         <input type="hidden" name = "freelancer" class="form-control" value={{request.user.id}}>
         {% comment %} <input type="text" name = "client" class="form-control" value={{client_id}}> {% endcomment %}
