@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputFirstName4">First Name</label>
+            <input type="text" class="form-control" id="inputFirstName4" placeholder="First Name" name="first_name">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputLastName4">Last Name</label>
+            <input type="text" class="form-control" id="inputLastName4" placeholder="Last Name" name="last_name">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="email" name="email">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" placeholder="username" name="username">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="password1" placeholder="password" name="password1">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="password2">Confirm password</label>
+            <input type="password" class="form-control" id="password2" placeholder="Confirm Password..." name="password2">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Next</button>
+</form>
+
+{% for error in form.errors %}
+    {{error}}
+{% endfor %}
+{% endblock content %}

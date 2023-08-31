@@ -9,19 +9,27 @@ class FreelancerRegistrationForm(UserCreationForm):
     class Meta:
         model = Account
         fields = (
-            "user_type",
             "email", 
             "username", 
             "first_name", 
             "last_name", 
-            "title", 
-            "skills", 
-            "country", 
-            "bio", 
-            "languages", 
+            "title",  
             "phone_number",
             "password1", 
             "password2"
+        )
+        
+class ClientRegistrationForm(UserCreationForm):
+    email = forms.EmailField(max_length=60, help_text="required. Add a valid Email address.")
+    class Meta:
+        model=Account
+        fields = (
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'password1',
+            'password2',
         )
         
 class UserLoginForm(forms.ModelForm):
@@ -45,8 +53,6 @@ class AccountupdateForm(forms.ModelForm):
         fields = (
             'first_name',
             'last_name',
-            'country',
-            'bio',
         )
         
 class ImageUpdateForm(forms.ModelForm):

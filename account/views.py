@@ -2,7 +2,7 @@ import os
 import pdb
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from account.forms import FreelancerRegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm
+from account.forms import FreelancerRegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm, ClientRegistrationForm
 from django.views.decorators.csrf import csrf_exempt
 from account.models import Account
 # Create your views here.
@@ -19,6 +19,27 @@ def type_selection(request):
 def user_registration(request, user_type):
     context = {}
     if user_type == "client":
+        if request.POST:
+            form = ClientRegistrationForm(request.POST)
+            if form.is_valid():
+                email = request.POST['email']
+                username = request.POST['username']
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
+                password = request.POST['password1']
+                
+                obj = form.save(commit=False)
+                obj.first_name = first_name
+                obj.last_name = last_name
+                obj.username = username
+                obj.email = email
+                obj.user_type = user_type
+                obj.save()
+                account = authenticate(email = email, password = password)
+                login(request, account)
+                return redirect('home')
+            else:
+                context['form'] = form
         return render(request, 'account/client_register.html', context)
     else:
         if request.POST:

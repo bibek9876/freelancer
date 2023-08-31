@@ -55,12 +55,8 @@ class Account(AbstractBaseUser):
     phone_number = PhoneNumberField(blank=True)
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
     username = models.CharField(verbose_name="Username", max_length=30, unique=True)
-    user_type = models.CharField(verbose_name="User type", max_length=30, blank=False, default="guest")
+    user_type = models.CharField(verbose_name="User type", max_length=30, blank=True, default="guest")
     sign_in_mode = models.CharField(max_length=30, blank=True, default="normal")
-    skills = ArrayField(models.CharField(max_length=200), default=[])
-    country = CountryField()
-    bio = models.CharField(max_length=500, null=True, blank = True, default='I m a bachelor graduate from Islington college, Nepal acheiving 71 percentage overall and currently working as a backend developer using Ruby on Rails.')
-    languages = models.CharField(max_length=50, null=False, blank=False, default="English")
     last_login = models.DateTimeField(verbose_name="Last login", auto_now=True)
     date_joined = models.DateTimeField(verbose_name="Date joined", auto_now_add=True)
     is_admin = models.BooleanField(default=False)
@@ -95,3 +91,67 @@ def submission_delete(sender, instance, **kwargs):
 #         instance.username = slugify(instance.user.username + "-" + datetime.datetime.now().timestamp)
         
 # pre_save.connect(pre_save_receiver, sender=Account)
+
+class Freelancerdetails(models.Model):
+    user = models.ForeignKey(Account, null = True, related_name='freelancer_details', on_delete = models.CASCADE)
+    hourly_rate = models.DecimalField(max_digits=3, decimal_places=2)
+    state = models.CharField(max_length=20)
+    zip = models.IntegerField()
+    street_address = models.CharField(max_length=150)
+    city = models.CharField(max_length=100)
+    country = CountryField()
+    
+class ClientDetails(models.Model):
+    user = models.ForeignKey(Account, null = True, related_name='client_details', on_delete = models.CASCADE)
+    state = models.CharField(max_length=20)
+    zip = models.IntegerField()
+    street_address = models.CharField(max_length=150)
+    city = models.CharField(max_length=100)
+    country = CountryField()
+
+class Business(models.Model):
+    client = models.ForeignKey(ClientDetails, null=True, related_name="client_business", on_delete=models.CASCADE)
+    business_name = models.CharField(max_length=100)
+    state = models.CharField(max_length=20)
+    zip = models.IntegerField()
+    street_address = models.CharField(max_length=150)
+    city = models.CharField(max_length=100)
+    country = CountryField()
+
+class Resume(models.Model):
+    freelancer = models.ForeignKey(Freelancerdetails, null = True, related_name='freelancer_resume', on_delete = models.CASCADE)
+    title = models.CharField(max_length=100)
+    bio = models.TextField()
+    languages = ArrayField(
+                    ArrayField(
+                        models.CharField(max_length=10, blank=True),
+                        size=8,
+                    ),
+                    size=1,
+                )
+    skills = ArrayField(
+                    ArrayField(
+                        models.CharField(max_length=10, blank=True),
+                        size=8,
+                    ),
+                    size=1,
+                )
+
+class Experience(models.Model):
+    resume = models.ForeignKey(Resume, null = True, related_name='resume_experience', on_delete = models.CASCADE)
+    title = models.CharField(max_length=100)
+    company = models.CharField(max_length=100)
+    city = models.CharField(max_length= 50)
+    country = CountryField()
+    currently_working = models.BooleanField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+class Education(models.CharField):
+    resume = models.ForeignKey(Resume, null = True, related_name='resume_education', on_delete = models.CASCADE)
+    school_name = models.CharField(max_length=100)
+    degree = models.CharField(max_length=100)
+    field = models.CharField(max_length=100)
+    start_date = models.CharField(max_length=100)
+    end_date = models.CharField(max_length=100)
+    description = models.TextField()
