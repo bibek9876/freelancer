@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
-from account.models import Account
+from account.models import Account, Resume
 
 class FreelancerRegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=60, help_text="Required. Add a valid email address.")
@@ -15,6 +15,7 @@ class FreelancerRegistrationForm(UserCreationForm):
             "last_name", 
             "title",  
             "phone_number",
+            "country",
             "password1", 
             "password2"
         )
@@ -59,3 +60,8 @@ class ImageUpdateForm(forms.ModelForm):
     class Meta:
         model=Account
         fields=('profile_image',)
+        
+class CreateResume(forms.ModelForm):
+    class Meta:
+        model = Resume
+        fields = ('title', 'bio', 'languages', 'skills')

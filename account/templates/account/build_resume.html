@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputFirstName4">Title</label>
+            <input type="text" class="form-control" id="inputFirstName4" placeholder="Title" name="title" required>
+        </div>
+        <div class="form-group col-md-6" id="language-container">
+            <label for="inputLastName">Languages</label>
+            <input type="text" class="form-control" id="inpurLanguages" placeholder="Languages" name="languages">
+            <button type="button" class="add_skill" onClick=addLanguages()>
+                Add Language
+            </button>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputBio">Biography</label>
+            <textarea type="text" class="form-control" id="inputBio" rows=5 placeholder="Bio" name="bio" >{{user.bio}}</textarea>
+        </div>
+        <div class="form-group col-md-6" id="skills-container">
+            <label for="skills">Skills</label>
+            <input type="text" class="form-control" id="skills" placeholder="Skills" name="skills" >
+        </div>
+        <button type="button" class="add_skill" onClick=addInput()>
+            Add Skill
+        </button>
+        
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% for field in form %}
+    {{field.errors}}
+{% endfor %}
+<script>
+    function addInput() {
+        var new_chq_no = Date.now();
+        var new_input="<input type='text' class='form-control' id='skills_"+new_chq_no+"' placeholder='Skills' name='skills' >";
+        $('#skills-container').append(new_input);
+    }
+
+    function addLanguages(){
+        var unique_id = Date.now()
+        var new_input="<input type='text' class='form-control' id='language_"+unique_id+"' placeholder='Languages' name='languages'>";
+        $('#language-container').append(new_input); 
+    }
+</script>
+{% endblock content %}

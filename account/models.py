@@ -53,6 +53,7 @@ class Account(AbstractBaseUser):
     profile_image = ResizedImageField(upload_to=upload_location, null=True, blank = True)
     title = models.CharField(verbose_name='Title', max_length=30, blank=False)
     phone_number = PhoneNumberField(blank=True)
+    country = CountryField()
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
     username = models.CharField(verbose_name="Username", max_length=30, unique=True)
     user_type = models.CharField(verbose_name="User type", max_length=30, blank=True, default="guest")
@@ -119,23 +120,17 @@ class Business(models.Model):
     country = CountryField()
 
 class Resume(models.Model):
-    freelancer = models.ForeignKey(Freelancerdetails, null = True, related_name='freelancer_resume', on_delete = models.CASCADE)
+    freelancer = models.ForeignKey(Account, null = True, related_name='freelancer_resume', on_delete = models.CASCADE)
     title = models.CharField(max_length=100)
     bio = models.TextField()
     languages = ArrayField(
-                    ArrayField(
-                        models.CharField(max_length=10, blank=True),
+                        models.CharField(max_length=200, blank=True),
                         size=8,
-                    ),
-                    size=1,
-                )
+                    )
     skills = ArrayField(
-                    ArrayField(
-                        models.CharField(max_length=10, blank=True),
+                        models.CharField(max_length=200, blank=True),
                         size=8,
-                    ),
-                    size=1,
-                )
+                    )
 
 class Experience(models.Model):
     resume = models.ForeignKey(Resume, null = True, related_name='resume_experience', on_delete = models.CASCADE)

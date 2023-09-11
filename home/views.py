@@ -5,13 +5,12 @@ from account.models import Account
 from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.postgres.search import SearchVector
-
+from home.decorators import resume_required
 # Create your views here.
-
 
 def home_page(request):
     context = {}
-    
+    # pdb.set_trace()
     user = request.user
     freelancers = Account.objects.filter(user_type = 'freelancer')
     job_list = Job.objects.filter(job_status="not assigned")

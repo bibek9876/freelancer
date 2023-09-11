@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load countries %}
+{% get_countries as countries %}
 
 <form method="POST">
     {% csrf_token %}
@@ -36,23 +38,14 @@
                 <option>Miss</option>
               </select>
           </div>
-          
-        <div class="form-group">
-          <label for="inputAddress">Country</label>
-          {{registration_form.country}}
-        </div>
         </div>
         <div class="form-group">
-            <label for="inputSkills">Skills</label>
-            <input type="text" class="form-control" id="inputSkills" placeholder="Skills" name="skills">
-        </div>
-        <div class="form-group">
-          <label for="inputBio">Biography</label>
-          <input type="text" class="form-control" id="inputBio" placeholder="Enter you Biography" name="bio">
-        </div>
-        <div class="form-group">
-          <label for="inputLanguage">Languages</label>
-          <input type="text" class="form-control" id="inputLanguage" placeholder="Enter the languages you know" name="languages">
+          <label for="inputAddress">Country</label><br>
+                <select name="country" >
+                    {% for country in countries %}
+                        <option value="{{ country.code }}">{{ country.name }}</option>
+                    {% endfor %}    
+                </select>
         </div>
         <div class="form-group">
             <label for="inputPassword4">Password</label>

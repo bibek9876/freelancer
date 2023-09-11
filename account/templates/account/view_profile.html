@@ -8,28 +8,50 @@
     {% else %}
         <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
     {% endif %}
-    {% if user_profile == request.user.id %}
+    {% if user_profile.id == request.user.id %}
         <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Update Picture</a>
     {% endif %}
         <div class='row'>
             <div class="col-md">
+                {% if user_profile.id == request.user.id %}
+                    {% if resume_count < 1 %}
+                        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'build_resume' user_profile.id %}">Create Resume</a>
+                    {% else %}
+                        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'build_resume' user_profile.id %}">Update Resume</a>
+                    {% endif %}
+                {% endif %}
+                <br>
                 <span>Name: {{user_profile.first_name}} {{user_profile.last_name}}</span> 
                 <br/>
                 <span>Country: {{user_profile.country.name}}</span>
                 <br/>
                 <hr>
+                <h4> Experience: </h4>
+                <span> {{resume.bio}}</span>
+                {% if user_profile.id == request.user.id %}
+                    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Add Experience</a>
+                {% endif %}
+                <hr>
+                <h4> Education: </h4>
+                <span> {{resume.bio}}</span>
+                {% if user_profile.id == request.user.id %}
+                    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Add Education</a>
+                {% endif %}
+                <hr>
                 <h4> Biography: </h4>
-                <span> {{user_profile.bio}}</span>
+                <span> {{resume.bio}}</span>
                 <hr>
                 <h4> Skills: </h4>
-                <span> {% for skill in user_profile.skills %}
-                            {{skill}}
+                <span> {% for skill in resume.skills %}
+                            {{skill}}, 
                         {% endfor %}</span>
                 <hr>
                 <h4> Languages: </h4>
-                <span> {{user_profile.languages}}</span>
+                <span> {% for language in resume.languages %}
+                    {{language}},
+                {% endfor %}</span>
                 <hr>
-                {% if user_profile == request.user.id %}
+                {% if user_profile.id == request.user.id %}
                 
                     <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_profile' user_profile.id %}">Update</a>
                 {% endif %}

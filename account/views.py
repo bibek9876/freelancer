@@ -2,9 +2,11 @@ import os
 import pdb
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from account.forms import FreelancerRegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm, ClientRegistrationForm
+from account.forms import FreelancerRegistrationForm, UserLoginForm, AccountupdateForm, ImageUpdateForm, ClientRegistrationForm, CreateResume
 from django.views.decorators.csrf import csrf_exempt
-from account.models import Account
+from account.models import Account, Resume
+from django_countries.fields import CountryField
+
 # Create your views here.
 
 
@@ -63,8 +65,6 @@ def user_login(request):
     context = {}
     
     user = request.user
-    if user.is_authenticated:
-        return redirect('home')
     
     if request.POST:
         form = UserLoginForm(request.POST)
@@ -73,10 +73,9 @@ def user_login(request):
             password = request.POST['password']
             
             user = authenticate(email = email, password = password)
+            login(request, user)
             
-            if user:
-                login(request, user)
-                return redirect('home')
+                
     else:
         form = UserLoginForm()
         
@@ -91,8 +90,11 @@ def view_user(request, user_id):
     context = {}
     user = request.user
     if user.is_authenticated:
+        resume = Resume.objects.filter(freelancer_id = user_id).first
         user_profile = Account.objects.get(id = user_id)
+        # pdb.set_trace()
     context['user_profile'] = user_profile
+    context['resume'] = resume
     return render(request, 'account/view_profile.html', context)
 
 def update_profile_image(request, user_id):
@@ -118,6 +120,7 @@ def update_profile_image(request, user_id):
 def update_profile(request, user_id):
     context = {}
     user = Account.objects.get(id=user_id)
+    resume = Resume.objects.filter(freelancer_id = user_id)
     if request.POST:
         if request.POST['country'] == "":
             country = user.country.code
@@ -138,4 +141,28 @@ def update_profile(request, user_id):
         form = AccountupdateForm()
         context['form'] = form
     context["user"] = user
+    context["resume_count"] = resume.count()
+    context["resume"] = resume
     return render(request, 'account/update_profile.html', context)
+
+@csrf_exempt
+def build_resume(request, user_id):
+    context ={}
+    user = Account.objects.get(id=user_id)
+    form = CreateResume(request.POST)
+    if request.POST:
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.freelancer_id = user_id
+            obj.skills = []
+            obj.languages = []
+            for skill in request.POST.getlist('skills'):
+                obj.skills.append(skill.capitalize())
+            for language in request.POST.getlist('languages'):
+                obj.languages.append(language.capitalize())
+            obj.save()
+            return redirect('view_user', user_id)
+        else:
+            context['form'] = form
+        context['user'] = user
+    return render(request, 'account/build_resume.html', context)

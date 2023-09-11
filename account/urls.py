@@ -5,6 +5,7 @@ from job.views import must_authenticate
 urlpatterns = [
     path("register/", views.type_selection, name='type_selection'),
     path("register/<user_type>", views.user_registration, name='user_registration'),
+    path("register/resume/<user_id>", views.build_resume, name='build_resume'),
     path("mustauthenticate/", must_authenticate, name='must_authenticate'),
     path("login/", views.user_login, name='login'),
     path("logout/", views.user_logout, name='logout'),
