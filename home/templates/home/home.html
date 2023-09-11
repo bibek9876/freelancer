@@ -1,7 +1,251 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<section class="home1">
+    <div class="container">
+        <div class="row">
+            <div class="col-5">
+                <div class="colleft">
+                    <img src="{% static 'image/home1.png' %}" alt="image" title="image">
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="colright">
+                    <h1> Your Gateway to Freelance Opportunities for Recent Graduates!</h1>
+                    <p>Discover a world of freelance possibilities and kickstart your career with our innovative web portal. </p>
+                    <div class="search-form"> 
+                        <form>
+                        <div class="input-box">
+                            <select name="job title" placeholder="Job Title" value="Job Title">
+                                <option value="1">Software Development</option>
+                                <option value="2">Data Analysis </option>
+                                <option value="3">Web Designer</option>
+                                <option value="3">Web Developer</option>
+                             </select>
+                        </div>
+                     <div class="input-box">
+                        <select name="job title" placeholder="All Category">
+                            <option value="1">Management</option>
+                            <option value="2">It</option>
+                         </select>
+                     </div>
+                        <div class="btn">
+                            <button>Serarch</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
+<section class="category">
+    <div class="heading">
+        <h2>Browse by category</h2>
+    </div>
+
+<div class="owl-carousel">
+    <div class="item">
+        <a href="home.html">
+         <div class="box">
+          
+             <h3>Content Writer</h3>
+         </div>
+        </a>
+     </div>
+     <div class="item">
+        <a href="home.html">
+         <div class="box">
+           
+             <h3>Graphic Designer</h3>
+         </div>
+        </a>
+     </div>
+     <div class="item">
+        <a href="home.html">
+         <div class="box">
+             
+             <h3>Marketing & Sales</h3>
+         </div>
+        </a>
+     </div>
+     <div class="item">
+        <a href="home.html">
+         <div class="box">
+             
+             <h3>Finance</h3>
+         </div>
+        </a>
+     </div>
+     <div class="item">
+        <a href="home.html">
+         <div class="box">
+             
+             <h3>Human Resource</h3>
+         </div>
+        </a>
+     </div>
+
+</div>
+</section>
+
+<section class="home2">
+    <div class="container">
+        <div class="heading">
+            <h2>How It Works</h2>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="box">
+                    <div class="icon">
+                        <img src="{% static 'image/icon1.png' %}" alt="image" title="image">
+                    </div>
+                    <h3>Post Tasks with Budgets</h3>
+                </div>
+            </div>
+
+       
+            <div class="col-4">
+                <div class="box">
+                    <div class="icon">
+                        <img src="{% static 'image/icon2.png' %}" alt="image" title="image">
+                    </div>
+                    <h3>Browse, Search, and Offer</h3>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="box">
+                    <div class="icon">
+                        <img src="{% static 'image/icon3.png' %}" alt="image" title="image">
+                    </div>
+                    <h3>Review and Accept Offers</h3>
+                </div>
+            </div>
+        </div>
+            
+        </div>
+    </div>
+</section>
+
+<section class="home3">
+    <div class="container">
+<div class="row">
+<div class="col-6">
+    <div class="colleft">
+        <h2>Find Freelance Opportunities That Suit Your Skills and Ambitions</h2>
+        <p>Suits Jobs for You is a cutting-edge web portal designed exclusively for recent graduates seeking freelance work. Developed by AUSDAIS LTY, a research-based company, our platform connects businesses with talented job seekers like you, ensuring a seamless and rewarding freelance experience.</p>
+        <a class="btns" href="search.html">Browse Job</a>
+    </div>
+</div>
+<div class="col-6">
+    <div class="colright">
+        <img src="{% static 'image/home3.jpg' %}" alt="image" title="image">
+    </div>
+</div>
+</div>
+    </div>
+</section>
+
+<section class="home4">
+    <div class="container">
+        <div class="heading">
+            <h2>Explore different job</h2>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="job-box">
+                    <div class="image">
+                        <img src="{% static 'image/job1.jpg' %}" alt="image" title="image">
+                    </div>
+                    <div class="job-info">
+                        <a href="job-detail.html"><h3>Web Portal Developer</h3></a>
+                      <ul><li>  <p>Posted Jobs</p> <span>180</span></li></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="job-box">
+                    <div class="image">
+                        <img src="{% static 'image/job2.jpg' %}" alt="image" title="image">
+                    </div>
+                    <div class="job-info">
+                        <a href="job-detail.html"><h3>UI/UX Designer</h3></a>
+                      <ul><li>  <p>Posted Jobs</p> <span>230</span></li></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="job-box">
+                    <div class="image">
+                        <img src="{% static 'image/job3.jpg' %}" alt="image" title="image">
+                    </div>
+                    <div class="job-info">
+                        <a href="job-detail.html"><h3>Full Stack Developer</h3></a>
+                      <ul><li>  <p>Posted Jobs</p> <span>350</span></li></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-5">
+    <div class="container">
+        <div class="heading">
+            <h2>Testimonials</h2>
+        </div>
+        <div class="owl-carousel">
+            <div class="item">
+                <div class="review-box">
+                    <div class="review-img">
+                        <img src="{% static 'image/freelancer-1.jpg' %}" alt="image" title="image">
+                    </div>
+                    <h4>William Thompson</h4>
+                    <p>I had a great experience using AUSDAIS LTY's Freelance Task Portal. The website is user-friendly, and I found several interesting tasks to work on as a recent graduate. 
+                    </p>
+                </div>
+            </div>
+            <div class="item">
+                <div class="review-box">
+                    <div class="review-img">
+                        <img src="{% static 'image/freelancer-2.jpg' %}" alt="image" title="image">
+                    </div>
+                    <h4>John Anderson</h4>
+                    <p>AUSDAIS LTY's Freelance Task Portal provided me with a wide range of freelance opportunities. The platform allowed me to browse tasks based on my preferences and offer competitive prices. </p>
+                </div>
+            </div>
+            <div class="item">
+                <div class="review-box">
+                    <div class="review-img">
+                        <img src="{% static 'image/freelancer-4.png' %}" alt="image" title="image">
+                    </div>
+                    <h4>Alexandra</h4>
+                    <p>I've been using AUSDAIS LTY's Freelance Task Portal for a while now, and it has been a game-changer for my freelance career. The platform is well-designed, and the task descriptions are clear and detailed. </p>
+                </div>
+            </div>
+            <div class="item">
+                <div class="review-box">
+                    <div class="review-img">
+                        <img src="{% static 'image/freelancer-3.jpg' %}" alt="image" title="image">
+                    </div>
+                    <h4>Robert Wilson</h4>
+                  <P>I was impressed by the quality of freelancers available on this website. I posted a project, and within hours, I received several competitive bids. The communication and professionalism of the freelancer I chose were outstanding. Will definitely use this platform again.</P>
+                </div>
+            </div>
+            <div class="item">
+                <div class="review-box">
+                    <div class="review-img">
+                        <img src="{% static 'image/freelancer-5.png' %}" alt="image" title="image">
+                    </div>
+                    <h4>jassica</h4>
+                    <p>I've been using this freelance AUSDAIS LTY for a while now, and it has been a game-changer for my career. The platform is easy to navigate, and I've had the opportunity to work with amazing clients. Thank you!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% comment %} 
 {% if request.user.user_type == "client" %}
 <div class="container">
     <h2>Freelancers: </h2>
@@ -44,5 +288,5 @@
         </div>
     </div>
 {% else %}
-{% endif %}
+{% endif %} {% endcomment %}
 {% endblock content %}
