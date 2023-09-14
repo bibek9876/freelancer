@@ -14,7 +14,16 @@
                     <h1> Your Gateway to Freelance Opportunities for Recent Graduates!</h1>
                     <p>Discover a world of freelance possibilities and kickstart your career with our innovative web portal. </p>
                     <div class="search-form"> 
-                        <form>
+                         <form action="{% url 'search_job' %}" method="GET">
+                            <div class="input-box">
+                                <input type="text" name = "query" class="form-control" id="inputJobTitle" placeholder="Type keywords...." >
+                                
+                            </div>
+                            <div class="btn">
+                                <button type="submit" >Search</button>
+                            </div>
+                        </form> 
+                        {% comment %} <form>
                         <div class="input-box">
                             <select name="job title" placeholder="Job Title" value="Job Title">
                                 <option value="1">Software Development</option>
@@ -32,7 +41,7 @@
                         <div class="btn">
                             <button>Serarch</button>
                         </div>
-                        </form>
+                        </form> {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -41,53 +50,69 @@
 </section>
 
 <section class="category">
-    <div class="heading">
-        <h2>Browse by category</h2>
+    <div class="container">
+        <div class="heading">
+            <h2>Browse by category</h2>
+        </div>
+
+        <div class="owl-carousel">
+            <div class="item">
+                <a href="home.html">
+                    <div class="box">
+                        <div class="image">
+                            <img src="{% static "image/blogger.png" %}" alt="image">
+                        </div>
+                    
+                        <div class="name">
+                            <h3>Content Writer</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="item">
+                <a href="home.html">
+                <div class="box">
+                    <div class="image">
+                        <img src="{% static "image/programmer.png" %}" alt="">
+                    </div>
+                    <div class="name">  <h3>Graphic Designer</h3></div>
+                </div>
+                </a>
+            </div>
+            <div class="item">
+                <a href="home.html">
+                <div class="box">
+                    <div class="image">
+                        <img src="{% static "image/collaboration.png" %}" alt="">
+                    </div>
+                    <div class="name">   <h3>Marketing & Sales</h3></div>
+                </div>
+                </a>
+            </div>
+            <div class="item">
+                <a href="home.html">
+                    <div class="box">
+                    <div class="image">
+                        <img src="{% static "image/fiance.png" %}" alt="">
+                    </div>
+                    
+                    <div class="name">     <h3>Finance</h3></div>
+                </div>
+                </a>
+            </div>
+            <div class="item">
+                <a href="home.html">
+                <div class="box">
+                    <div class="image">
+                        <img src="{% static "image/hr.png" %}" alt="">
+                    </div>
+                    <div class="name">      <h3>Human Resource</h3></div>
+                </div>
+                </a>
+            </div>
+
+        </div>
     </div>
-
-<div class="owl-carousel">
-    <div class="item">
-        <a href="home.html">
-         <div class="box">
-          
-             <h3>Content Writer</h3>
-         </div>
-        </a>
-     </div>
-     <div class="item">
-        <a href="home.html">
-         <div class="box">
-           
-             <h3>Graphic Designer</h3>
-         </div>
-        </a>
-     </div>
-     <div class="item">
-        <a href="home.html">
-         <div class="box">
-             
-             <h3>Marketing & Sales</h3>
-         </div>
-        </a>
-     </div>
-     <div class="item">
-        <a href="home.html">
-         <div class="box">
-             
-             <h3>Finance</h3>
-         </div>
-        </a>
-     </div>
-     <div class="item">
-        <a href="home.html">
-         <div class="box">
-             
-             <h3>Human Resource</h3>
-         </div>
-        </a>
-     </div>
-
-</div>
 </section>
 
 <section class="home2">
@@ -135,7 +160,7 @@
     <div class="colleft">
         <h2>Find Freelance Opportunities That Suit Your Skills and Ambitions</h2>
         <p>Suits Jobs for You is a cutting-edge web portal designed exclusively for recent graduates seeking freelance work. Developed by AUSDAIS LTY, a research-based company, our platform connects businesses with talented job seekers like you, ensuring a seamless and rewarding freelance experience.</p>
-        <a class="btns" href="search.html">Browse Job</a>
+        <a class="btns" href="{% url 'view_job' %}">Browse Job</a>
     </div>
 </div>
 <div class="col-6">

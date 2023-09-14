@@ -1,7 +1,115 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Login</h2>
+
+
+<section class="login1">
+	<div class="container">
+		<div class="login-heading">
+			<h1>Login</h1>
+		</div>
+	</div>
+</section>
+<section class="login2">
+	<div class="container">
+		<div class="form-wrap">
+			<div class="login-header">
+				<h2 class="site-title"> Securely <span>Login</span> to Your Profile</h2>
+			</div>
+			<form method="POST">
+				<div class="form-group">
+					<label for="Email Address">Email Address</label>
+					<input type="email" class="form-control" placeholder="Your Email" name="email" required>
+				</div>
+				<div class="form-group">
+					<label for="Password">Password</label>
+					<input type="password" class="form-control" placeholder="Your Password" name="password" required>
+				</div>
+				<div class="login-btn">
+					<button type="submit"><i class="fa fa-sign-in"></i>Login</button>
+				</div>
+				<p style="text-align: center; margin-bottom: 10px;">or</p> 
+				
+				<a href="https://accounts.google.com" target="_blank" class="google-id"><i class="fa fa-google"></i> Continue with Google</a>
+ 
+				<a href="https://appleid.apple.com" class="apple-id" target="_blank"><i class="fa fa-apple"></i> Continue with Apple</a>
+			
+				<div class="account">
+					<p>Don't have an account? <a href="create-account.html">Create Account</a>
+
+					</p>
+  <a href="create-account.html" class="btns">Sign In</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>
+
+
+
+<section class="login1">
+	<div class="container">
+		<div class="login-heading">
+			<h1>Login</h1>
+		</div>
+	</div>
+</section>
+<section class="login2">
+	<div class="container">
+		<div class="form-wrap">
+			<div class="login-header">
+				<h2 class="site-title"> Securely <span>Login</span> to Your Profile</h2>
+			</div>
+			<form method="POST">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="Email Address">Email Address</label>
+					<input type="email" class="form-control" placeholder="Your Email" name="email">
+				</div>
+				<div class="form-group">
+					<label for="Password">Password</label>
+					<input type="password" class="form-control" placeholder="Your Password" name="password">
+				</div>
+				<div class="login-text">
+					<div class="left">
+						<input type="checkbox">
+						<p>Remember Me </p>
+					</div>
+					<div class="right">
+						<a href="index.html">Forgot Password?</a>
+					</div>
+				</div>
+				<div class="login-btn">
+					<button type="submit"><i class="fa fa-sign-in"></i>Login</button>
+				</div>
+				<div class="account">
+					<p>Create an <a href="{% url 'type_selection' %}">Account</a>
+					</p>
+				</div>
+				<div class="social-media">
+					<p>Continue with social media</p>
+					<div class="links">
+						<a href="index.html"><i class="fa fa-facebook"></i></a>
+						<a href="index.html"><i class="fa fa-google"></i></a>
+						<a href="index.html"><i class="fa fa-twitter"></i></a>
+					</div>
+				</div>
+			</form>
+			{% for field in login_form %}
+				{% for error in field.errors %}
+					<p style="color: red;">{{error}}</p>
+				{% endfor %}
+			{% endfor %}
+			
+			{% if login_form.non_field_errors %}
+				<div style="color:red;">
+					<p>{{login_form.non_field_errors}}</p>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</section>
+{% comment %} <h2>Login</h2>
 <form method="post">{% csrf_token %}
 	{% for field in login_form %}
 		<p>
@@ -28,6 +136,6 @@
 	{% endif %}
 	<button type="submit">Log in</button>
 	
-</form>
+</form>  {% endcomment %}
 
 {% endblock content %}

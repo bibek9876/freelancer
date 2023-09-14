@@ -1,11 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="GET">
-<input type="radio" id="user_type" name="user_type" value="client">
-<label for="user_type">Client</label><br>
-<input type="radio" id="user_type" name="user_type" value="freelancer">
-<label for="user_type">freelancer</label><br>
-<input type="submit" value="Submit">
-</form>
+<section class="login1">
+    <div class="container">
+        <div class="login-heading">
+            <h1>Create Account</h1>
+        </div>
+    </div>
+</section>
+<section class="create-account">
+<div class="container">
+    <div class="account-box">
+        <h2>Join as a <span>Client</span> or <span>Freelancer</span> </h2>
+        <form method="GET">
+        <div class="row">
+            <div class="col-6">
+
+            <div class="client-box">
+                <input type="radio" value="client" name="user_type">
+                <h3>I'm a client, hiring for a project </h3>
+            </div>
+
+            </div>
+            <div class="col-6">
+
+                <div class="freelancer-box">
+                    <input type="radio" value="freelancer" name="user_type">
+                    <h3>
+                        I'm a freelancer, looking for work
+                         </h3>
+                </div>
+        
+            </div>
+        </div>
+        <div class="login-btn">
+            <button type="submit" class="btn">Create Account</button>
+          <a href="client-register.html" class="btns" id="client">Join as a Client</a>
+          <a href="freelence-register.html" class="btns" id="freelancer">Join as a Freelancer</a>
+        </div>
+        <div class="account">
+            <p>Already have an Account <a href="{% url "login" %}">Login</a>
+            </p>
+        </div>
+    </form>
+    </div>
+</div>
+</section>
 {% endblock content %}

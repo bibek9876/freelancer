@@ -1,0 +1,51 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+{% load static %}
+
+
+
+
+<header>
+    <div class="logo">
+        <a href="dashboard.html"><img src="{% static 'admin_static/image/logo.png' %}" alt="image" title="image"></a>
+    </div>
+    </div>
+</header>
+<div class="login register">
+    <div class="login-form">
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Request to be admin</h2>
+            <div class="input-group">
+                <label for="First Name">First Name</label>
+                <input type="text" placeholder="First Name" name="first_name">
+            </div>
+            <div class="input-group">
+                <label for="Last Name">Last Name</label>
+                <input type="text" placeholder="Last Name" name="last_name">
+            </div>
+            <div class="input-group">
+                <label for="Email">Email</label>
+                <input type="email" placeholder="Email" name="email">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" placeholder="Password" name="password1">
+            </div>
+            <div class="input-group">
+                <label for="password">Confirm Password</label>
+                <input type="password" placeholder="Confirm Password" name="password2">
+            </div>
+            <div class="login-btn">
+                <button type="submit">Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+<footer>
+    <p>@Copyright 2023
+
+    </p>
+</footer>
+{% endblock content %}

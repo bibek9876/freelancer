@@ -2,61 +2,92 @@
 {% load static %}
 {% block content %}
 
-<div class='container'>
-    {% if user_profile.profile_image %}
-        <img class="img-fluid mx-auto d-block" src="{{user_profile.profile_image.url}}">
-    {% else %}
-        <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
-    {% endif %}
-    {% if user_profile.id == request.user.id %}
-        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Update Picture</a>
-    {% endif %}
-        <div class='row'>
-            <div class="col-md">
-                {% if user_profile.id == request.user.id %}
-                    {% if resume_count < 1 %}
-                        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'build_resume' user_profile.id %}">Create Resume</a>
-                    {% else %}
-                        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'build_resume' user_profile.id %}">Update Resume</a>
-                    {% endif %}
-                {% endif %}
-                <br>
-                <span>Name: {{user_profile.first_name}} {{user_profile.last_name}}</span> 
-                <br/>
-                <span>Country: {{user_profile.country.name}}</span>
-                <br/>
-                <hr>
-                <h4> Experience: </h4>
-                <span> {{resume.bio}}</span>
-                {% if user_profile.id == request.user.id %}
-                    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Add Experience</a>
-                {% endif %}
-                <hr>
-                <h4> Education: </h4>
-                <span> {{resume.bio}}</span>
-                {% if user_profile.id == request.user.id %}
-                    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Add Education</a>
-                {% endif %}
-                <hr>
-                <h4> Biography: </h4>
-                <span> {{resume.bio}}</span>
-                <hr>
-                <h4> Skills: </h4>
-                <span> {% for skill in resume.skills %}
-                            {{skill}}, 
-                        {% endfor %}</span>
-                <hr>
-                <h4> Languages: </h4>
-                <span> {% for language in resume.languages %}
-                    {{language}},
-                {% endfor %}</span>
-                <hr>
-                {% if user_profile.id == request.user.id %}
-                
-                    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_profile' user_profile.id %}">Update</a>
-                {% endif %}
+
+<section class="profile client">
+    <div class="container">
+        <div class="title">
+            <div class="search-name">
+                <h2>Profile</h2>
             </div>
         </div>
+       <div class="row">
+        <div class="col-8">
+            {% if user_profile.id == request.user.id %}
+                <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'update_user_image' user_profile.id %}">Update Picture</a>
+            {% endif %}
+            <div class="profile-image">
+                <div class="image">
+                    {% if user_profile.profile_image %}
+                        <img class="img-fluid mx-auto d-block" src="{{user_profile.profile_image.url}}">
+                    {% else %}
+                        <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
+                    {% endif %}
+                </div>
+                <div class="profile-content">
+                    <h3>{{user_profile.first_name}} {{user_profile.last_name}}</h3>
+                    {% if user_profile.id == request.user.id %}
+                        {% if resume_count < 1 %}
+                            <a class="btn" href="{% url 'build_resume' user_profile.id %}">Create Resume</a>
+                        {% else %}
+                            <a class="btn" href="{% url 'build_resume' user_profile.id %}">Update Resume</a>
+                        {% endif %}
+                    {% endif %}
+           
+                </div>
+             </div>
+        </div>
+        <div class="col-4">
+            <div class="toggle">
+        <a href="client-profile.html"><i class="fa fa-ellipsis-h"></i></a>
+            </div>
+        </div>
+       </div>
+        <div class="row">
+           
+  <div class="col-5">
+  <div class="box-wrap">
+    <div class="col-6">
+        <div class="box"><h3>120+k</h3>
+             <h4>Total Earings</h4>
+             </div>
 </div>
+
+<div class="col-6">
+<div class="box"><h3>Total Hours</h3>
+ <h4>600</h4>
+ </div>
+  </div>
+</div>
+    <div class="profile-left">
+   <ul>
+    <li><h3>Phone:</h3><h4>{{user_profile.phone_number}}</h4></li>
+    <li><h3>Email:</h3><h4>{{user_profile.email}} </h4></li>
+    <li><h3>Address:   </h3><h4>{{user_profile.country.name}}</h4></i></li>
+
+  
+
+
+</ul>
+
+    </div>
+  </div>
+  <div class="col-7">
+    <div class="profile-right">
+        <h3>About</h3>
+        
+        <p> {{resume.bio}}</h3>
+            <h3>Skills</h3>
+        <ul>
+            
+            {% for skill in resume.skills %}
+                <li><h4>{{skill}}</h4></li>
+            {% endfor %}
+        </ul>
+    </div>
+  </div>
+        </div>
+    </div>
+</section>
+
 
 {% endblock content %}

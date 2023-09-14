@@ -1,50 +1,126 @@
 {% extends 'base.html' %}
 {% block content %}
-<form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-    <div class="form-row">
-      <input type="hidden" name = "user" class="form-control" value={{user}}>
-      <div class="form-group col-md-6">
-        <label for="inputJobTitle">Job Title</label>
-        <input type="text" name = "job_title" class="form-control" id="inputJobTitle" placeholder="Job title">
+
+{% comment %} 
+<section class="contact3 post-job">
+        
+  <div class="container"> 
+<h2>Post Jobs</h2>
+  
+
+              <div class="contact-right">
+                  <form method="POST" enctype="multipart/form-data">
+                      <h2 class="site-title">
+                          <span> Post Jobs</span>
+                      </h2>
+                              <div class="form-group">
+                                  <label for="Job Title">Job Title</label>
+                                  <input type="text" class="form-control" placeholder="Job Title">
+                              </div>
+                              <div class="form-group">
+                                  <label for="Rate">Rate</label>
+                                  <input type="text" class="form-control" placeholder="Rate">
+                              </div>
+                              <div class="form-group">
+                                  <label for="Hour">Hour</label>
+                                  <input type="text" class="form-control" placeholder="Hour">
+                              </div>
+                              <label for="Job Description">Job Description</label>
+                          <textarea  class="form-control" id="default" placeholder="Description"></textarea>
+                          
+                         
+                         
+                        
+                              <div class="form-group">
+                                  <label for="Task Type">Task Type</label>
+                                  <input type="text" class="form-control" placeholder="Task Type">
+                              </div>
+                              <div class="form-group">
+                                  <label for="Completion Time">Completion Time</label>
+                                  <input type="text" class="form-control" placeholder="Completion Time">
+                              </div>
+                              <div class="form-group">
+
+                                  <label for="Image">Image</label>
+                                  <div class="variants">
+                                      <div class='file'>
+                                          <label for='input-file' >
+                                              <i class="fa fa-cloud" aria-hidden="true"></i> Select a file
+                                          </label>
+                                          <input id='input-file' type='file' />
+                                      </div>
+                                  </div>
+                              </div>
+                          <button class="btns">Post</button>
+                      </form>
+              </div>
+          
+      
+  </div>
+</section> {% endcomment %}
+
+
+<section class="contact3 post-job">
+        
+  <div class="container"> 
+  <h2>Post Jobs</h2>
+  <div class="contact-right">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+      <div class="form-row">
+        <input type="hidden" name = "user" class="form-control" value={{user}}>
+        <div class="form-group col-md-6">
+          <label for="inputJobTitle">Job Title</label>
+          <input type="text" name = "job_title" class="form-control" id="inputJobTitle" placeholder="Job title">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="inputRate">Rate</label>
+          <input type="integer" name = "rate" class="form-control" id="inputRate" placeholder="Rate">
+        </div>
       </div>
-      <div class="form-group col-md-6">
-        <label for="inputRate">Rate</label>
-        <input type="integer" name = "rate" class="form-control" id="inputRate" placeholder="Rate">
+      <div class="form-group">
+        <label for="inputHour">Hour</label>
+        <input type="integer" name = "hour" class="form-control" id="inputHour" placeholder="Hour" required>
       </div>
+      <div class="form-group">
+        <label for="inputDescription">Description</label>
+        <textarea type="text" rows="10" name = "description" class="form-control" id="inputDescription" placeholder="Description" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="inputType">Task Type</label>
+        <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type" required>
+      </div>
+      <div class="form-group">
+        <label for="inputDescription">Completion Time</label>
+        <input type="text" rows="10" name = "completion_time" class="form-control" id="inputDescription" placeholder="Completion Time" required>
+      </div>
+      <div class="form-group">
+
+        <label for="Image">Image</label>
+        <div class="variants">
+            <div class='file'>
+                <label for='input-file' >
+                    <i class="fa fa-cloud" aria-hidden="true"></i> Select a file
+                </label>
+                <input id='input-file' type='file' name = "image" required/>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-      <label for="inputHour">Hour</label>
-      <input type="integer" name = "hour" class="form-control" id="inputHour" placeholder="Hour">
-    </div>
-    <div class="form-group">
-      <label for="inputDescription">Description</label>
-      <textarea type="text" rows="10" name = "description" class="form-control" id="inputDescription" placeholder="Description"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="inputType">Task Type</label>
-      <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type">
-    </div>
-    <div class="form-group">
-      <label for="inputDescription">Completion Time</label>
-      <input type="text" rows="10" name = "completion_time" class="form-control" id="inputDescription" placeholder="Completion Time" required>
-    </div>
-    <div class="form-group">
-      <label for="inputImage">Image</label>
-      <input type="file" name = "image" class="form-control" id="inputImage" accept="image/*" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Post</button>
-  </form>
-  {% for opt in post_job %}
-    {% for error in opt.errors %}
-      <p style="color: red">{{ error }}</p>
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+    {% for opt in post_job %}
+      {% for error in opt.errors %}
+        <p style="color: red">{{ error }}</p>
+      {% endfor %}
+
     {% endfor %}
 
-  {% endfor %}
-
-  {% if post_job.non_field_errors %}
-    <div style="color: red">
-        <p>{{registration_form.non_field_errors}}</p>
+    {% if post_job.non_field_errors %}
+      <div style="color: red">
+          <p>{{registration_form.non_field_errors}}</p>
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
+  </div>
+</section>
 {% endblock content %}

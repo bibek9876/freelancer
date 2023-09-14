@@ -9,9 +9,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>AUSDAIS LTY</title>
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static "css/style.css" %}">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+        <link rel="stylesheet" href="{% static "css/owl.carousel.css" %}">
+        <link rel="stylesheet" href="{% static "css/responsive.css" %}">
     </head>
     <body>
         {% include 'navbar.html' %}
@@ -19,8 +20,8 @@
         
         {% endblock content %}
         {% include 'footer.html' %}
-        <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/owl.carousel.js' %}"></script>
+        <script src="{% static "js/jquery.min.js" %}"></script>
+        <script src="{% static "js/owl.carousel.js" %}"></script>
         <script>
             $(document).ready(function() {
                 $(".home-5 .owl-carousel").owlCarousel({
@@ -35,13 +36,19 @@
                     autoplayHoverPause: true,
                     responsive: {
                         0: {
-                            items: 3
+                            items: 1
                         },
                         600: {
-                            items: 3
+                            items: 1
                         },
                         1000: {
-                            items: 3
+                            items: 2
+                        },
+                        1200:{
+                            items:2
+                        },
+                        1300:{
+                            items:3
                         }
                     }
                 })
@@ -57,17 +64,25 @@
                     autoplayHoverPause: true,
                     responsive: {
                         0: {
-                            items: 5
+                            items: 1
                         },
                         600: {
-                            items: 5
+                            items: 2
                         },
                         1000: {
-                            items: 5
+                            items: 3
                         }
                     }
                 })
             });
         </script>
+            <script>
+                jQuery(document).ready(function() {
+        
+                    jQuery('header .toggle').click(function() {
+                        jQuery('.bottom-right').slideToggle('slow');
+                    })
+                });
+            </script>
     </body>
 </html>

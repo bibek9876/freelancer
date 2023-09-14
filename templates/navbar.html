@@ -41,29 +41,57 @@
     </div>
   </nav> {% endcomment %}
 {% load static %}
-  <header>
+  <header class="dashboard">
     <div class="navbar">
         <div class="container">
             <div class="header-bottom">
                 <div class="bottom-left">
                     <div class="logo">
-                        <a href="index.html"> <img src="{% static 'image/logo.png' %}" alt="logo" title="logo"></a>
+                        <a href="{% url 'home' %}"> <img src="{% static 'image/logo.png' %}" alt="logo" title="logo"></a>
                     </div>
                 </div>
                 <div class="bottom-right">
                     <ul>
                         <li>
-                            <a class="active" href="index.html">Home</a>
+                            <a href="{% url 'home' %}">Home</a>
                         </li>
-                        <li>
+                        
+                        {% if request.user.is_authenticated %}
+                          {% if request.user.user_type == "client" %}
+                            <li>
+                              <a href={% url 'post_job' %}>Post</a>
+                            </li>
+                            <li>
+                            <a href={% url 'view_job' %}>Show your jobs</a>
+                            </li>
+                          {% else %}
+                            <li><a href="{% url "view_job" %}">Jobs</a></li>
+                            <li><a href="{% url "view_user" request.user.id %}">Profile</a></li>
+                            <li><a  href="apply-jobs.html">Apply for Job</a></li>
+                        
+                        
+                          {% endif %}
+                          <li>
+                            <a>Hello! {{request.user.username}}</a>
+                          </li>
+                          <li>
+                            <a class="btn" href="{% url 'logout' %}">Logout</a>
+                          </li>
+                          <li>
+                        {% else %}
+                          <li>
                             <a href="about.html">About</a>
+                          </li>
+                          <li>
+                              <a href="contact.html">Contact</a>
+                          </li>
+                        <li>
+                          <a class="btn" href="{% url 'login' %}">Login</a>
                         </li>
                         <li>
-                            <a href="search.html">Jobs</a>
+                          <a class="btn" href="{% url 'type_selection' %}">Register</a>
                         </li>
-                        <li>
-                            <a href="contact.html">Contact</a>
-                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

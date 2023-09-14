@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="login1">
+    <div class="container">
+        <div class="login-heading">
+            <h1>Contact Us</h1>
+        </div>
+    </div>
+</section>
+
+<section class="contact3">
+    <div class="container">
+
+    
+ 
+                <div class="contact-right">
+                    <form method="POST">
+                        <h2 class="site-title">
+                            Let's Stay in Touch - <span>Contact Us</span> Now</h2>
+        
+                       
+                            <label for="Name">Name</label>
+                            <input type="text" class="form-control" placeholder="Your Name" name="name">
+                     
+                            <label for="Email">Email</label>
+                            <input type="email" class="form-control" placeholder="Your Email Address" name="email">
+
+                            <label for="Phone">Phone</label>
+                            <input type="tel" class="form-control" placeholder="Your Phone Number" name="phone">
+             
+                        <label for="Message">Message</label>
+                        <textarea class="form-control" cols="20" rows="5" placeholder="Your Message" name="message"></textarea>
+                        <button type="submit" class="btns">Send Message</button>
+                    </form>
+                </div>
+            
+        
+                {% for form in forms %}
+                    {{form.errors}}
+                {% endfor %}
+    </div>
+</section>
+
+{% endblock content %}

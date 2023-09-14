@@ -1,6 +1,95 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+
+<section class="job-list">
+    <div class="container">
+      <div class="title">
+          <div class="search-name">
+              <h2>Jobs</h2> </div>
+              <div class="search">
+                  <div class="input-group">
+                      <select name="job title" placeholder="Job Title" value="Job Title">
+                          <option value="1">Web Designer</option>
+                          <option value="2">Content Writing</option>
+                          <option value="3">Web Development</option>
+                          <option value="4">Social Media Management</option>
+                          <option value="5">Graphic Design</option>
+                          <option value="6">Virtual Assistance</option>
+                          <option value="7">SEO Specialist</option>
+                          <option value="8">Online Tutoring</option>
+                          <option value="9">Video Editing</option>
+                          <option value="10">Data Entry</option>
+                          <option value="11">Marketing Consultant</option>
+                       </select>
+                      </div>
+                     <div class="input-group">
+                      <select name="job title" placeholder="Job Type" value="Job Type">
+                          <option value="1">Fresher</option>
+                          <option value="2">Experienced</option>
+                         
+                       </select>
+                     </div>
+                
+                  <div class="find-btn">
+                      <a class="btns" href="search.html">Find job</a>
+                  </div>
+              </div>
+      </div>
+  <div class="row">
+    {% for job in jobs %}
+        <div class="col-10">
+            <div class="job-box">
+                <div class="job-heading">
+                <h3>{{job.job_title}}</h3>
+                <span class="old">${{job.hour}} hours/per week</span>
+                </div>
+        
+                <div class="price">
+                    <div class="price-left client">
+                        <p>{{job.description}}</p>
+                    </div>
+            
+                </div>
+                    <ul class="client">
+                        <li><a href="{% url "job_detail" job.id %}">View Details</a></li>
+                
+                    </ul>
+            </div> 
+        </div>
+    {% endfor %}
+  </div>
+  <div class="pagination">
+      <ul>
+        {% for page_number in page_obj.paginator.page_range %}
+
+        <a
+
+            href="{% url 'terms-by-page' page_number %}"
+
+            class="{% if page_number == page_obj.number %}current{% endif %}"
+
+        >
+
+            {{page_number}}
+
+        </a>
+
+    {% endfor %}
+          {% comment %} <li><a  href="client-message.html"><i class="fa fa-arrow-left"></i></a></li>
+          <li><a class="active" href="client-message.html">1</a></li>
+          <li><a href="client-message.html">2</a></li>
+          <li><a href="client-message.html">3</a></li>
+          <li><a href="client-message.html"><i class="fa fa-arrow-right"></i></a></li> {% endcomment %}
+      </ul>
+  </div>
+    </div>
+  </section>
+
+
+{% comment %} 
+
 <div class="container-fluid">
     <h1>Posted jobs</h1>
     <div class="row">
@@ -16,5 +105,5 @@
                 </div>
             {% endfor %}
     </div>
-</div> 
+</div>  {% endcomment %}
 {% endblock content %}

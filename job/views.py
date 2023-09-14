@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.management.color import no_style
 from django.db import connection
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 
 def must_authenticate(request):
@@ -45,6 +47,18 @@ def post_job(request):
 def view_jobs(request):
     context = {}
     user = request.user
+    jobs = Job.objects.all()
+    p = Paginator(jobs, 5)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context['page_obj'] = page_obj
     if user.is_authenticated:
         if user.user_type == "client":
             jobs = Job.objects.filter(user_id=user.id).filter(job_status="not assigned")
@@ -53,6 +67,23 @@ def view_jobs(request):
     else:
         jobs = Job.objects.filter(job_status="not assigned")
     context['jobs'] = jobs
+    return render(request, 'job/view_jobs.html', context)
+
+def job_pagination(request, page):
+    context= {}
+    jobs = Job.objects.all()
+    p = Paginator(jobs, 5)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context['page_obj'] = page_obj
+    
     return render(request, 'job/view_jobs.html', context)
 
 def job_details(request, job_id):

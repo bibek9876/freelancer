@@ -1,0 +1,62 @@
+{% extends 'admin_base.html' %}
+{% include 'admin_sidebar.html' %}
+{% block content %}
+
+
+<div class="dashboard">
+
+    <div class="dashboard_wrap">
+        <nav>
+
+            <div class="user">
+                <a href="{% url "ad_logout" %}">Logout</a>
+            </div>
+        </nav>
+
+        <div class="heading">
+            <h2>Welcome to Dashbaord</h2>
+        </div>
+
+        <div class="box-wrap">
+            <div class="card">
+                <div class="left">
+                    <i class="fa fa-suitcase"></i>
+                </div>
+                <div class="right">
+                    <h3> Total Applied</h3>
+                    <h4>280</h4>
+                </div>
+            </div>
+            <div class="card">
+                <div class="left">
+                        <i class="fa fa-search-plus"></i>
+                </div>
+                <div class="right">
+                    <h3>Saved Jobs</h3>
+                    <h4>120</h4>
+                </div>
+            </div>
+            <div class="card">
+                <div class="left">
+                        <i class="fa fa-envelope-o"></i>
+                </div>
+                <div class="right">
+                    <h3>Message</h3>
+                    <h4>350</h4>
+                </div>
+            </div>
+            <div class="card">
+                <div class="left">
+                      <i class="fa fa-wpforms"></i>
+                </div>
+                <div class="right">
+                    <h3>Review CV</h3>
+                    <h4>50</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+    

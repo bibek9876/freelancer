@@ -1,6 +1,84 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<section class="login1">
+    <div class="container">
+        <div class="login-heading">
+            <h1>Job Detail</h1>
+        </div>
+    </div>
+</section>
+<section class="job-detail1">
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div class="detail-left">
+                    <h2>{{job.job_title}}</h2>
+                    <img src="{{job.image.url}}" alt="image" title="image">
+                
+                
+                    <p>{{job.description}}</p>
+
+                    {% if request.user.id != job.user_id %}
+                        <ul>
+                            <li><a href={% url 'apply_job' job.id %}>Apply</a></li>
+                            <li> <a href={% url 'bid_job' job.id %}>Bid</a></li>
+                        </ul>
+                    {% else %}
+                        <ul>
+                            <li> <a href="#">Edit</a></li> 
+                            <li> <a href="{% url 'delete_job' job.id %}">Delete</a></li> 
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="detail-right">
+                    <h2> Date Posted</h2>
+
+                    <ul>
+                        <li>
+                            <h4>All</h4>
+
+                            
+                        </li>
+                        <li>
+                            <h4>Last Hours</h4>
+
+                           
+                        </li>
+                        <li>
+                            <h4>Last 24 Hours</h4>
+
+                        
+                        </li>
+                    </ul><h2> Career Level</h2>
+
+                    <ul>
+                        <li>
+                            <h4>Manager</h4>
+
+                            
+                        </li>
+                        <li>
+                            <h4>Officer</h4>
+
+                           
+                        </li>
+                        <li>
+                            <h4>Student</h4>
+
+                        
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 <div>
     <img class="card-auto-top" src="{{job.image.url}}">
 </div>

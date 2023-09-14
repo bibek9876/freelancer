@@ -51,7 +51,7 @@ class Account(AbstractBaseUser):
     first_name = models.CharField(verbose_name='First Name', max_length=30, blank=False)
     last_name = models.CharField(verbose_name='Last Name', max_length=30, blank=False)
     profile_image = ResizedImageField(upload_to=upload_location, null=True, blank = True)
-    title = models.CharField(verbose_name='Title', max_length=30, blank=False)
+    title = models.CharField(verbose_name='Title', max_length=30, blank=True, null=True)
     phone_number = PhoneNumberField(blank=True)
     country = CountryField()
     email = models.EmailField(verbose_name="Email", max_length=254, unique=True)
@@ -93,6 +93,15 @@ def submission_delete(sender, instance, **kwargs):
         
 # pre_save.connect(pre_save_receiver, sender=Account)
 
+class AdminDetails(models.Model):
+    first_name=models.CharField(max_length=50, null=False)
+    last_name=models.CharField(max_length=50, null=False)
+    email=models.EmailField(max_length=200, null=False)
+    status=models.CharField(max_length=200, null=False, default="waiting")
+    token=models.CharField(max_length=200, null=False, default="token")
+    joined_date=models.DateTimeField(verbose_name="Date joined", auto_now_add=True)
+    last_login = models.DateTimeField(verbose_name="Last login", auto_now=True)
+    
 class Freelancerdetails(models.Model):
     user = models.ForeignKey(Account, null = True, related_name='freelancer_details', on_delete = models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=3, decimal_places=2)
