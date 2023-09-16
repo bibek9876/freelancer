@@ -2,6 +2,36 @@
 
 {% block content %}
 
+<div class="container">
+    <h3>Filter</h3>
+    <h5>Project Length</h5>
+    <hr>
+    <div class="left">
+    <p for="hourly">Less than one month</p>
+    <input type="radio" id="less_than_1_month" name="project" vlaue="less_than_1_month"/>
+    </div>
+    <label for="hourly">1 to 3 months</label>
+    <input type="radio" id="1_to_3_months" name="project" vlaue="1_to_3_months"/>
+    <label for="hourly">3 to 6 months</label>
+    <input type="radio" id="3_to_6_months" name="project" vlaue="3_to_6_months"/>
+    <label for="hourly">More than 6 months</label>
+    <input type="radio" id="more_than_6_months" name="project" vlaue="more_than_6_months"/>
+    <hr>
+    <h5>Sort</h5>
+    <form method="GET" action="{% url "search_job" %}">
+    <select name="sort_price" id="select1" placeholder="Job Title" value="Job Title" >
+        <option value="low_to_high">Low To high</option>
+        <option value="high_to_low">High To Low</option>
+    </select>
+    <hr>
+    <p for="price">Price:</p>
+    <input type="number" id="min_price" name="min_price" vlaue="min_price" placeholder="Minimum Price"/>
+    <input type="number" id="max_price" name="max_price" vlaue="max_price" placeholder="Maximum Price"/>
+    <button type="submit">apply</button>
+    </form>
+    </div>
+</div>
+
 
 <section class="job-list">
     <div class="container">
@@ -38,50 +68,47 @@
               </div>
       </div>
   <div class="row">
-    {% for job in jobs %}
-        <div class="col-10">
-            <div class="job-box">
-                <div class="job-heading">
-                <h3>{{job.job_title}}</h3>
-                <span class="old">${{job.hour}} hours/per week</span>
-                </div>
-        
-                <div class="price">
-                    <div class="price-left client">
-                        <p>{{job.description}}</p>
+    {% if result_count > 1 %}
+    
+        {% for job in jobs %}
+            <div class="col-10">
+                <div class="job-box">
+                    <div class="job-heading">
+                    <h3>{{job.job_title}}</h3>
+                    <span class="old">${{job.rate}} hours/per week</span>
                     </div>
             
-                </div>
-                    <ul class="client">
-                        <li><a href="{% url "job_detail" job.id %}">View Details</a></li>
+                    <div class="price">
+                        <div class="price-left client">
+                            <p>{{job.description}}</p>
+                        </div>
                 
-                    </ul>
-            </div> 
-        </div>
-    {% endfor %}
+                    </div>
+                        <ul class="client">
+                            <li><a href="{% url "job_detail" job.id %}">View Details</a></li>
+                    
+                        </ul>
+                </div> 
+            </div>
+        {% endfor %}
+    {% else %}
+    <h3>No results here. Try another search</h3>
+        
+    {% endif %}
   </div>
   <div class="pagination">
       <ul>
-        {% for page_number in page_obj.paginator.page_range %}
-
-        <a
-
-            href="{% url 'terms-by-page' page_number %}"
-
-            class="{% if page_number == page_obj.number %}current{% endif %}"
-
-        >
-
-            {{page_number}}
-
-        </a>
-
-    {% endfor %}
-          {% comment %} <li><a  href="client-message.html"><i class="fa fa-arrow-left"></i></a></li>
-          <li><a class="active" href="client-message.html">1</a></li>
-          <li><a href="client-message.html">2</a></li>
-          <li><a href="client-message.html">3</a></li>
-          <li><a href="client-message.html"><i class="fa fa-arrow-right"></i></a></li> {% endcomment %}
+        {% if total_page.has_previous %}
+            <li><a  href="{% url "view_job" %}?page=1">First</i></a></li>
+            <li><a  href="{% url "view_job" %}?page={{total_page.previous_page_number}}"><i class="fa fa-arrow-left"></i></a></li>
+        {% endif %}
+        {% for page in pages %}
+            <li><a href="{% url "view_job" %}?page={{page}}">{{page}}</a></li>
+        {% endfor %}
+        {% if total_page.has_next %}
+            <li><a  href="{% url "view_job" %}?page={{total_page.last_page_number}}"><i class="fa fa-arrow-left"></i></a></li>
+            <li><a  href="{% url "view_job" %}?page={{last_page}}">Last</i></a></li>
+        {% endif %}
       </ul>
   </div>
     </div>

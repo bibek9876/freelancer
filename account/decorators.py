@@ -2,7 +2,6 @@ import functools
 from django.shortcuts import redirect
 from django.contrib import messages
 from account.models import AdminDetails
-import pdb
 
 def admin_required(view_func, redirect_url="login_ad"):
     """
@@ -13,7 +12,6 @@ def admin_required(view_func, redirect_url="login_ad"):
     @functools.wraps(view_func)
     def wrapper(request, *args, **kwargs):
         admins = AdminDetails.objects.all()
-        pdb.set_trace()
         if request.user not in admins:
             return view_func(request,*args, **kwargs)
         messages.info(request, "You need to be logged out")

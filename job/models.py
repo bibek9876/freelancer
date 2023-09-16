@@ -1,4 +1,3 @@
-import pdb
 from django.db import models
 from account.models import Account
 from django.utils.text import slugify
@@ -37,6 +36,26 @@ def category_upload_location(instance, filename):
     )
     return file_path
 
+class JobCategories(models.Model):
+    category_name = models.CharField(max_length=30, blank=False, null=False)
+    image =  ResizedImageField(upload_to=category_upload_location, null=True, blank=True)
+    slug = models.SlugField()
+    description = models.CharField(max_length=500, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.category_name}"
+
+class JobSubCategories(models.Model):
+    job_categories = models.ForeignKey(JobCategories, null = True, related_name='job_categories', on_delete = models.CASCADE)
+    sub_category_name = models.CharField(max_length=50, blank=False, null=False)
+    image =  ResizedImageField(upload_to=category_upload_location, null=True, blank=True)
+    description = models.CharField(max_length=500, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.sub_category_name}"
+
 class Job(models.Model):
     user = models.ForeignKey(Account, verbose_name = "user id", on_delete = models.CASCADE)
     task_type = models.CharField(max_length=50, null=False, default="IT")
@@ -47,6 +66,7 @@ class Job(models.Model):
     description = models.TextField(max_length=600)
     completion_time = models.CharField(max_length=50)
     job_status = models.CharField(max_length=50, default="not assigned")
+    category = models.ForeignKey(JobSubCategories, verbose_name = "job_sub_category", on_delete = models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     
@@ -78,27 +98,6 @@ class RejectionReason(models.Model):
     client = models.ForeignKey(Account, null = True, related_name='client1', on_delete = models.CASCADE)
     job = models.ForeignKey(Job, null=False, related_name="job1", on_delete=models.CASCADE)
     
-
-class JobCategories(models.Model):
-    category_name = models.CharField(max_length=30, blank=False, null=False)
-    image =  ResizedImageField(upload_to=category_upload_location, null=True, blank=True)
-    slug = models.SlugField()
-    description = models.CharField(max_length=500, blank=False, null=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"{self.category_name}"
-
-
-class JobSubCategories(models.Model):
-    job_categories = models.ForeignKey(JobCategories, null = True, related_name='job_categories', on_delete = models.CASCADE)
-    sub_category_name = models.CharField(max_length=50, blank=False, null=False)
-    image =  ResizedImageField(upload_to=category_upload_location, null=True, blank=True)
-    description = models.CharField(max_length=500, blank=False, null=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"{self.sub_category_name}"
 
 @receiver(post_delete, sender=JobCategories)
 def submission_delete(sender, instance, **kwargs):

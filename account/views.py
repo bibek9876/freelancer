@@ -1,5 +1,4 @@
 import os
-import pdb
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from account.forms import (FreelancerRegistrationForm, 
@@ -31,7 +30,6 @@ def admin_registration(request):
             password = form.cleaned_data['password1']
             account = form.save(commit=False)
             # admin.password = set_password(password)
-            pdb.set_trace()
             account.save()
             form=AdminRegistrationForm(request.POST)
             if form.is_valid():
@@ -92,7 +90,6 @@ def login_ad(request):
     
     if request.POST:
         form = AdminLoginForm(request.POST)
-        pdb.set_trace()
         if form.is_valid():
             email = request.POST['email']
             password = request.POST['password']
@@ -200,7 +197,6 @@ def view_user(request, user_id):
         resume = Resume.objects.filter(freelancer_id = user_id).first
         resume_count = Resume.objects.filter(freelancer_id = user_id).count()
         user_profile = Account.objects.get(id = user_id)
-        # pdb.set_trace()
     context['user_profile'] = user_profile
     context['resume'] = resume
     context['resume_count'] = resume_count

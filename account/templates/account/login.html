@@ -35,10 +35,9 @@
 				<a href="https://appleid.apple.com" class="apple-id" target="_blank"><i class="fa fa-apple"></i> Continue with Apple</a>
 			
 				<div class="account">
-					<p>Don't have an account? <a href="create-account.html">Create Account</a>
+					<p>Don't have an account? <a href="{% url "type_selection" %}">Create Account</a>
 
 					</p>
-  <a href="create-account.html" class="btns">Sign In</a>
 				</div>
 			</form>
 		</div>
@@ -46,7 +45,7 @@
 </section>
 
 
-
+{% comment %}
 <section class="login1">
 	<div class="container">
 		<div class="login-heading">
@@ -109,7 +108,7 @@
 		</div>
 	</div>
 </section>
-{% comment %} <h2>Login</h2>
+ <h2>Login</h2>
 <form method="post">{% csrf_token %}
 	{% for field in login_form %}
 		<p>

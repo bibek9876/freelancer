@@ -1,9 +1,9 @@
-import pdb
+
 from django.shortcuts import render, redirect, get_object_or_404
 from job.forms import PostJob, RequestBid, AcceptBid, RejectBid
-from job.models import Job, JobBid, AgreedJob, RejectionReason
+from job.models import Job, JobBid, AgreedJob, RejectionReason, JobCategories, JobSubCategories
 from django.views.decorators.csrf import csrf_exempt
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from account.models import Account
 from notification.models import Notification
 from django.urls import reverse
@@ -24,6 +24,15 @@ def must_authenticate(request):
 def post_job(request):
     context= {}
     user = request.user
+    if request.POST.get('category') != "" and request.POST:
+        response = {
+            'key2' : 'val2',
+        }
+        return JsonResponse(response)
+    job_categories = JobCategories.objects.all()
+    job_sub_categories = JobSubCategories.objects.all()
+    context['categories'] = job_categories
+    context['sub_categories'] = job_sub_categories
     if not user.is_authenticated:
         return redirect('must_authenticate')
     else:
@@ -42,23 +51,16 @@ def post_job(request):
         else:
             form = PostJob()
             context['post_job'] = form
-        return render(request, 'job/post_job.html', context)
+    return render(request, 'job/post_job.html', context)
 
 def view_jobs(request):
     context = {}
     user = request.user
-    jobs = Job.objects.all()
-    p = Paginator(jobs, 5)
+    jobs = Job.objects.filter()
+    paginator = Paginator(jobs, 2)
     page_number = request.GET.get('page')
-    try:
-        page_obj = p.get_page(page_number)  # returns the desired page object
-    except PageNotAnInteger:
-        # if page_number is not an integer then assign the first page
-        page_obj = p.page(1)
-    except EmptyPage:
-        # if page is empty then return last page
-        page_obj = p.page(p.num_pages)
-    context['page_obj'] = page_obj
+    total_page = paginator.get_page(page_number)
+    number_of_pages = total_page.paginator.num_pages
     if user.is_authenticated:
         if user.user_type == "client":
             jobs = Job.objects.filter(user_id=user.id).filter(job_status="not assigned")
@@ -66,7 +68,11 @@ def view_jobs(request):
             jobs = Job.objects.filter(job_status="not assigned")
     else:
         jobs = Job.objects.filter(job_status="not assigned")
-    context['jobs'] = jobs
+    context['total_page'] = total_page
+    context['last_page'] = number_of_pages
+    context['pages'] = [n+1 for n in range(number_of_pages)]
+    context['jobs'] = total_page
+    context['result_count'] = jobs.count()
     return render(request, 'job/view_jobs.html', context)
 
 def job_pagination(request, page):

@@ -22,7 +22,6 @@
 
                     {% if request.user.id != job.user_id %}
                         <ul>
-                            <li><a href={% url 'apply_job' job.id %}>Apply</a></li>
                             <li> <a href={% url 'bid_job' job.id %}>Bid</a></li>
                         </ul>
                     {% else %}

@@ -87,8 +87,22 @@
         <textarea type="text" rows="10" name = "description" class="form-control" id="inputDescription" placeholder="Description" required></textarea>
       </div>
       <div class="form-group">
-        <label for="inputType">Task Type</label>
-        <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type" required>
+        <label for="inputType">Main Category</label>
+        {% comment %} <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type" required> {% endcomment %}
+        <select id="main_category" class="form-control"  onChange="mainCategory()">
+          {% for category in categories %}
+            <option value="{{category.id}}">{{category}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="inputType">Task Category</label>
+        {% comment %} <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type" required> {% endcomment %}
+        <select id="task_type" class="form-control">
+          {% for category in sub_categories %}
+            <option value="{{category.id}}">{{category}}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="form-group">
         <label for="inputDescription">Completion Time</label>
@@ -123,4 +137,24 @@
     </div>
   </div>
 </section>
+
+<script>
+  function mainCategory(){
+    var category = document.getElementById("main_category").value
+    $.ajax({
+      type: "POST",
+      url: "{% url 'post_job' %}",
+      data: {
+        category: category
+      },
+      success: function(response){
+        //if request if made successfully then the response represent the data
+
+        alert(response);
+      }
+    })
+    debugger;
+  }
+</script>
+
 {% endblock content %}

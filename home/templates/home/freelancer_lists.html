@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="profile freelancer">
+    <div class="container">
+        <div class="title">
+            <div class="search-name">
+                <h2>Freelancer</h2> </div>
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="Search Freelancer"><i class="fa fa-search"></i>
+                </div>
+        </div>
+       <div class="row">
+            {% for user in freelancer %}
+                <div class="col-6">
+                    <div class="profile-image">
+                        <div class="image">
+                            {% if user.profile_image %}
+                                <img class="img-fluid mx-auto d-block" src="{{user.profile_image.url}}">
+                            {% else %}
+                                <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
+                            {% endif %}
+                        </div>
+                        <div class="profile-content">
+                            <span>{{user.title}}</span>
+                            <h3>{{user.first_name}} {{user.last_name}}</h3>
+                            <ul>
+                                <li><i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i></li>
+                                <a class="btns" href="{% url "view_user" user.id %}">View User</a>
+                                </ul>
+                            
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+
+
+<div class="pagination">
+    <ul>
+        {% if freelancer.has_previous %}
+            <li><a  href="/freelancers/?page=1">First</i></a></li>
+            <li><a  href="/freelancers/?page={{freelancer.previous_page_number}}"><i class="fa fa-arrow-left"></i></a></li>
+        {% endif %}
+        {% for page in pages %}
+            <li><a href="/freelancers/?page={{page}}">{{page}}</a></li>
+        {% endfor %}
+        {% if freelancer.has_next %}
+            <li><a href="/freelancers/?page={{freelancer.next_page_number}}"><i class="fa fa-arrow-right"></i></a></li>
+            <li><a href="/freelancers/?page={{last_page}}">Last</i></a></li>
+        {% endif %}
+    </ul>
+</div>
+    </div>
+</section>
+{% endblock content %}
