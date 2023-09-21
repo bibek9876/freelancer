@@ -1,6 +1,7 @@
 import os
+import pdb
 from django.shortcuts import render, redirect
-from job.models import Job
+from job.models import Job, JobSubCategories
 from account.models import Account
 from home.forms import ContactForm
 from django.views.decorators.csrf import csrf_exempt
@@ -29,6 +30,8 @@ def home_page(request):
 def search_job(request):
     context = {}
     jobs = Job.objects.all()
+    pdb.set_trace()
+    categories = JobSubCategories.objects.all()
     query = request.GET.get('query')
     if request.GET.get('query') != "" and request.GET.get('query') is not None:
         query = request.GET.get('query')
@@ -40,7 +43,26 @@ def search_job(request):
     if request.GET.get('max_price') != "" and request.GET.get('max_price') is not None:
         query=request.GET.get('max_price')
         jobs = jobs.filter(rate__lte=query)
-        
+    
+    if request.GET.get('deadline') != "" and request.GET.get('deadline') is not None:
+        query = request.GET.get('deadline')
+        jobs = jobs.filter(
+            completion_time__year= request.GET.get('deadline').split('-')[0],
+            completion_time__month= request.GET.get('deadline').split('-')[1],
+            completion_time__day= request.GET.get('deadline').split('-')[2],
+            )
+    
+    if request.GET.get('project_length') != "" and request.GET.get('project_length') is not None:
+        query = request.GET.get('project_length')
+        jobs = jobs.filter(
+            project_length__icontains = query
+        )
+    
+    if request.GET.get('category') != "" and request.GET.get('category') is not None:
+        query = request.GET.get('category')
+        jobs = jobs.filter(category__sub_category_name__contains = query)
+    pdb.set_trace()
+    
     # paggination
     page = request.GET.get("page")
     paginator = Paginator(jobs, 1)
@@ -54,6 +76,7 @@ def search_job(request):
         jobs = paginator.page(paginator.num_pages)
     
     context['results'] = jobs
+    context['categories'] = categories
     context['query'] = query
     context['last_page'] = total_page
     context['pages'] = [n+1 for n in range(total_page)]
@@ -82,6 +105,24 @@ def freelancer_list(request):
     context['last_page'] = total_page
     context['pages'] = [n+1 for n in range(total_page)]
     return render(request, 'home/freelancer_lists.html', context)
+
+def freelancer_search(request):
+    context={}
+    freelancers = Account.objects.all()
+    
+    if request.GET.get("freelancer") != "" and request.GET.get("freelancer") is not None:
+        query = request.GET.get('freelancer')
+        freelancer = freelancers.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query)).distinct()
+    
+    paginator = Paginator(freelancer, 6)
+    page_number = request.GET.get('page')
+    pagination_data = paginator.get_page(page_number)
+    total_page = pagination_data.paginator.num_pages
+    context['freelancer'] = pagination_data
+    context['last_page'] = total_page
+    context['pages'] = [n+1 for n in range(total_page)]
+    return render(request, 'home/freelancer_lists.html', context)
+
 
 @csrf_exempt
 def contact(request):

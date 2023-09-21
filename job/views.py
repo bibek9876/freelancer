@@ -1,6 +1,8 @@
 
+import os
+import pdb
 from django.shortcuts import render, redirect, get_object_or_404
-from job.forms import PostJob, RequestBid, AcceptBid, RejectBid
+from job.forms import PostJob, RequestBid, AcceptBid, RejectBid, EditJob
 from job.models import Job, JobBid, AgreedJob, RejectionReason, JobCategories, JobSubCategories
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, JsonResponse
@@ -19,16 +21,25 @@ def must_authenticate(request):
     context = {}
     return render(request, 'account/must_authenticate.html', context)
 
-
+@csrf_exempt
+def get_sub_categories(request):
+    if request.POST.get('category') != "" and request.POST:
+        sub_category= JobSubCategories.objects.filter(job_categories_id = request.POST.get('category'))
+        sub_category_list=[]
+        for category in sub_category:
+            sub_category_list.append({
+                                        "category_id": category.id,
+                                        "category_name": category.sub_category_name
+                                    })
+        response = {
+            'sub_categories' : sub_category_list,
+        }
+        return JsonResponse(response)
+    
 @csrf_exempt
 def post_job(request):
     context= {}
     user = request.user
-    if request.POST.get('category') != "" and request.POST:
-        response = {
-            'key2' : 'val2',
-        }
-        return JsonResponse(response)
     job_categories = JobCategories.objects.all()
     job_sub_categories = JobSubCategories.objects.all()
     context['categories'] = job_categories
@@ -42,9 +53,6 @@ def post_job(request):
             form = PostJob(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
-                # user = user_id
-                # obj.save()
-                # form = PostJob()
                 return redirect('home')
             else:
                 context['post_job'] = form
@@ -53,10 +61,38 @@ def post_job(request):
             context['post_job'] = form
     return render(request, 'job/post_job.html', context)
 
+@login_required
+def edit_jobs(request, job_id):
+    context={}
+    job = Job.objects.get(id=job_id)
+    pdb.set_trace()
+    if request.POST:
+        form = EditJob(request.POST)
+        if form.is_valid():
+            image_path = job.image.path
+            if os.path.exists(image_path):
+                os.remove(image_path)
+            job.job_title = request.POST['job_title']
+            job.rate = request.POST['rate']
+            job.hour = request.POST['hour']
+            job.description = request.POST['description']
+            job.completion_time = request.POST['completion_time']
+            job.image = request.POST['image']
+            job.save()
+            context['form'] = form
+        else:
+            context['form'] = form
+    else:
+        form = EditJob()
+        context['form'] = form
+    context['job'] = job
+    return render(request, 'job/edit_job.html', context)
+
 def view_jobs(request):
     context = {}
     user = request.user
     jobs = Job.objects.filter()
+    categories = JobSubCategories.objects.all()
     paginator = Paginator(jobs, 2)
     page_number = request.GET.get('page')
     total_page = paginator.get_page(page_number)
@@ -68,6 +104,7 @@ def view_jobs(request):
             jobs = Job.objects.filter(job_status="not assigned")
     else:
         jobs = Job.objects.filter(job_status="not assigned")
+    context['categories'] = categories
     context['total_page'] = total_page
     context['last_page'] = number_of_pages
     context['pages'] = [n+1 for n in range(number_of_pages)]
@@ -255,7 +292,8 @@ def reject_bid(request, job_bid_id, freelancer_id):
 def search_job(request):
     context = {}
     result = Job.objects.filter(body_text__search="cheese")
-    
+
+@login_required
 def delete_job(request, job_id):
     context = {}
     job = Job.objects.get(id = job_id)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% comment %} 
 <div class="container">
     <h3>Filter</h3>
     <h5>Project Length</h5>
@@ -30,11 +30,12 @@
     <button type="submit">apply</button>
     </form>
     </div>
-</div>
+</div> {% endcomment %}
 
-<section class="job-list">
+
+<section class="job1">
     <div class="container">
-      <div class="title">
+      {% comment %} <div class="title">
           <div class="search-name">
               <h2>Jobs</h2> </div>
               <div class="search">
@@ -88,7 +89,87 @@
             </div> 
         </div>
     {% endfor %}
-  </div>
+  </div> {% endcomment %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="search-filter">
+            <div class="filter-box">
+                <h3>Search</h3>
+                <form method="GET" action="{% url "search_job" %}">
+                    <input class="form-control" type="text" placeholder="Search" name="query">
+                </form>
+            </div>  
+            <hr>
+            <form method="GET" action="{% url "search_job" %}">
+                <div class="filter-box"><h3>Cateogry</h3>
+                    <select name="category" class="form-control">
+                        <option value="">Select..</option>
+                        {% for category in categories %}
+                            <option value={{category.sub_category_name}}>{{category.sub_category_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <hr>
+                <div class="filter-box">
+                    <h3>Projet Price</h3>
+                    <div class="range-slider">
+                        <span class="irs js-irs-0"><span class="irs"><span class="irs-line" tabindex="-1"><span class="irs-line-left"></span><span class="irs-line-mid"></span><span class="irs-line-right"></span></span><span class="irs-min" style="visibility: hidden;">Rp. 0</span><span class="irs-max" style="visibility: visible;">Rp. 1.000.000</span><span class="irs-from" style="visibility: visible; left: 0%;">Rp. 0</span><span class="irs-to" style="visibility: visible; left: 20.4339%;">Rp. 350.000</span><span class="irs-single" style="visibility: hidden; left: 2.57231%;">Rp. 0 - Rp. 350.000</span></span><span class="irs-grid"></span><span class="irs-bar" style="left: 3.09917%; width: 32.8306%;"></span><span class="irs-shadow shadow-from" style="display: none;"></span><span class="irs-shadow shadow-to" style="display: none;"></span><span class="irs-slider from" style="left: 0%;"></span><span class="irs-slider to type_last" style="left: 32.8306%;"></span></span><input type="text" class="js-range-slider irs-hidden-input" value="" readonly="" name="price">
+                    </div>
+                </div><hr>
+                <div class="filter-box">
+                    <h3>Deadline</h3>
+                    <input type="date" class="form-control" name="deadline">
+                </div>
+                <hr>
+                <div class="filter-box">
+                    <h3>Project Length</h3>
+                    <div class="job-cate">
+                        <input type="radio" name="project_length" value="small">
+                        <h4>Small Project</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="project_length" value="medium">
+                        <h4>Medium Project</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="project_length" value="large">
+                        <h4>Large Project</h4>
+                    </div>
+                </div>
+                <button type="submit" class="btns">Apply</button>
+            </form>
+        </div>
+    </div>
+    
+
+    <div class="col-8">
+        {% for job in results %}
+        <div class="job-box">
+            <div class="col-4">
+                <div class="job-image">
+                    <a href="job-detail.html"> <img src="{{job.image.url}}" alt="image" title="image"></a>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="job-info">
+                    <a href="job-detail.html">
+                        <h3>{{job.job_title}}</h3>
+                    </a>
+                
+                    <p>{{job.description}}</p>
+                    <div class="link">
+                        <a href="#" class="btns">Available Tasks</a>
+                        <a class="btn" href="{% url "job_detail" job.id %}">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
   <div class="pagination">
     <ul>
         {% if results.has_previous %}

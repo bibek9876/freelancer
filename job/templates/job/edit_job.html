@@ -1,7 +1,49 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 
-    
+<section class="contact3 post-job">
+        
+    <div class="container"> 
+        <h2>Edit Job</h2>
+        <div class="contact-right">
+            <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputJobTitle">Job Title</label>
+                        <input type="text" name = "job_title" class="form-control" id="inputJobTitle" placeholder="Job title" value={{job.job_title}}>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputRate">Rate</label>
+                        <input type="integer" name = "rate" class="form-control" id="inputRate" placeholder="Rate" value={{job.rate}}>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputHour">Hour</label>
+                    <input type="integer" name = "hour" class="form-control" id="inputHour" placeholder="Hour" required value={{job.hour}}>
+                </div>
+                <div class="form-group">
+                    <label for="inputDescription">Completion Time</label>
+                    <input type="text" rows="10" name = "completion_time" class="form-control" id="inputDescription" placeholder="Completion Time" required value={{job.completion_time}}>
+                </div>
+                <label for="Image">Image</label>
+                <div class="variants">
+                    <div class='file'>
+                        <label for='input-file' >
+                            <i class="fa fa-cloud" aria-hidden="true"></i> Select a file
+                        </label>
+                        <input id='input-file' type='file' name = "image" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputDescription">Description</label>
+                    <textarea type="textarea" rows="10" name = "description" class="form-control" id="inputDescription" placeholder="Description" required >{{job.description}}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </div>
+    </div>
+</section>
 
 {% endblock content %}

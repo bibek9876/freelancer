@@ -7,9 +7,11 @@
         <div class="title">
             <div class="search-name">
                 <h2>Freelancer</h2> </div>
-                <div class="search-box">
-                    <input type="text" class="form-control" placeholder="Search Freelancer"><i class="fa fa-search"></i>
-                </div>
+                <form method="GET" action="{% url "freelancer_search" %}">
+                    <div class="search-box">
+                        <input type="text" class="form-control" name="freelancer" placeholder="Search Freelancer"><i class="fa fa-search"></i>
+                    </div>
+                </form>
         </div>
        <div class="row">
             {% for user in freelancer %}

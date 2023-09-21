@@ -31,6 +31,8 @@
                         {% else %}
                             <a class="btn" href="{% url 'build_resume' user_profile.id %}">Update Resume</a>
                         {% endif %}
+                        <br>
+                        <a class="btn" href="{% url 'update_profile' user_profile.id %}">Update Profile</a>
                     {% endif %}
            
                 </div>

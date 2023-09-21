@@ -61,12 +61,14 @@ class Job(models.Model):
     task_type = models.CharField(max_length=50, null=False, default="IT")
     image = ResizedImageField(upload_to=upload_location, null=True, blank=True)
     job_title = models.CharField(max_length=200)
+    price_per = models.CharField(max_length=200)
+    project_length = models.CharField(max_length=200)
     rate = models.IntegerField()
-    hour = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(max_length=600)
-    completion_time = models.CharField(max_length=50)
+    completion_time = models.DateField()
     job_status = models.CharField(max_length=50, default="not assigned")
     category = models.ForeignKey(JobSubCategories, verbose_name = "job_sub_category", on_delete = models.CASCADE)
+    freelancer_experience = models.CharField(max_length=50, null=False)
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     

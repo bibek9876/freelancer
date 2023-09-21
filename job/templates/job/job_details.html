@@ -26,7 +26,7 @@
                         </ul>
                     {% else %}
                         <ul>
-                            <li> <a href="#">Edit</a></li> 
+                            <li> <a href="{% url 'edit_job' job.id %}">Edit</a></li> 
                             <li> <a href="{% url 'delete_job' job.id %}">Delete</a></li> 
                         </ul>
                     {% endif %}
@@ -77,19 +77,5 @@
     </div>
 </section>
 
-
-<div>
-    <img class="card-auto-top" src="{{job.image.url}}">
-</div>
-    <p>{{job.job_title}}</p>
-    <p>{{job.hour}}</p>
-    <p>{{job.rate}}</p>
-    {% if request.user.id != job.user_id %}
-        <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'apply_job' job.id %}>Apply</a>
-        <a class="btn btn-outline-success my-2 my-sm-0" href={% url 'bid_job' job.id %}>Bid</a>
-    {% else %}
-        <a class="btn btn-outline-success my-2 my-sm-0" href="#">Edit</a>
-        <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'delete_job' job.id %}">Delete</a>
-    {% endif %}
 {% endblock content %}
 

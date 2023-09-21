@@ -79,8 +79,19 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="inputHour">Hour</label>
-        <input type="integer" name = "hour" class="form-control" id="inputHour" placeholder="Hour" required>
+        <label for="inputHour">Price</label>
+        <Select class="form-control" name="price_per">
+          <option value="per_hour">Per Hour</option>
+          <option value="per_project">Per Project</option>
+        </Select>
+      </div>
+      <div class="form-group">
+        <label for="inputHour">Project Length</label>
+        <Select class="form-control" name="project_length">
+          <option value="small">Small Project</option>
+          <option value="medium">Medium Project</option>
+          <option value="large">Large Project</option>
+        </Select>
       </div>
       <div class="form-group">
         <label for="inputDescription">Description</label>
@@ -90,6 +101,7 @@
         <label for="inputType">Main Category</label>
         {% comment %} <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type" required> {% endcomment %}
         <select id="main_category" class="form-control"  onChange="mainCategory()">
+          <option selected>Select...</option>
           {% for category in categories %}
             <option value="{{category.id}}">{{category}}</option>
           {% endfor %}
@@ -98,15 +110,30 @@
       <div class="form-group">
         <label for="inputType">Task Category</label>
         {% comment %} <input type="text" name = "task_type" class="form-control" id="inputType" placeholder="Task Type" required> {% endcomment %}
-        <select id="task_type" class="form-control">
-          {% for category in sub_categories %}
-            <option value="{{category.id}}">{{category}}</option>
-          {% endfor %}
+        <select id="task_type" class="form-control" name="category" disabled>
+          <option>Select....</option>
         </select>
       </div>
       <div class="form-group">
         <label for="inputDescription">Completion Time</label>
-        <input type="text" rows="10" name = "completion_time" class="form-control" id="inputDescription" placeholder="Completion Time" required>
+        <input type="date" name = "completion_time" class="form-control" id="inputDescription" placeholder="Completion Time" required>
+      </div>
+      <div class="form-group">
+        <label for="inputexperience">Freelancer Experience</label>
+        <select class="form-control" name="freelancer_experience" required>
+            <option selected>Select...</option>
+            <option value="fresher">Fresher</option>
+            <option value="experienced">Experienced</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="inputLength">Project Length</label>
+        <select class="form-control" name="project_length" required>
+            <option selected>Select...</option>
+            <option value="small_project">Small</option>
+            <option value="medium_project">Medium</option>
+            <option value="large_project">Large</option>
+        </select>
       </div>
       <div class="form-group">
 
@@ -120,7 +147,7 @@
             </div>
         </div>
     </div>
-      <button type="submit" class="btn btn-primary">Post</button>
+      <button type="submit" class="btns">Post</button>
     </form>
     {% for opt in post_job %}
       {% for error in opt.errors %}
@@ -141,16 +168,22 @@
 <script>
   function mainCategory(){
     var category = document.getElementById("main_category").value
+    $('#task_type').empty()
+    $('#task_type').removeAttr('disabled');
     $.ajax({
       type: "POST",
-      url: "{% url 'post_job' %}",
+      url: "{% url 'get_sub_categories' %}",
       data: {
         category: category
       },
       success: function(response){
-        //if request if made successfully then the response represent the data
-
-        alert(response);
+        if (response.sub_categories.length < 1) {
+          $('#task_type').attr('disabled', 'disabled');
+        }
+        for(i=0; i<response.sub_categories.length; i++){
+          debugger
+          $('#task_type').append(`<option value="${response.sub_categories[i].category_id}">${response.sub_categories[i].category_name}</option>`);
+        };
       }
     })
     debugger;

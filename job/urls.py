@@ -9,6 +9,8 @@ urlpatterns = [
     path("apply/<job_id>", views.apply_job, name='apply_job'),
     path("apply/bid/<job_id>", views.bid_job, name='bid_job'),
     path("job/delete/<job_id>", views.delete_job, name='delete_job'),
+    path("job/edit/<job_id>", views.edit_jobs, name='edit_job'),
+    path("job/getsubcategories", views.get_sub_categories, name='get_sub_categories'),
     path("bid/request/<job_bid_id>/<notification_id>", views.view_bid, name='view_bid'),
     path("bid/reject/<job_bid_id>/<freelancer_id>", views.reject_bid, name='reject_bid'),
 ]
