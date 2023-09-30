@@ -1,15 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="POST" >
-    <div class="form-row">
-        <input type="hidden" name = "freelancer" class="form-control" value={{request.user.id}}>
-        {% comment %} <input type="text" name = "client" class="form-control" value={{client_id}}> {% endcomment %}
-        <div class="form-group col-md-6">
-          <label for="inputJobTitle">Reason for rejecting</label>
-          <textarea type="text" rows="10" name = "reason" class="form-control" id="inputJobTitle" placeholder="Reason" required></textarea>
+<section class="contact3 post-job">
+  <div class="container"> 
+    <h2>Bid Rejection</h2>
+    <div class="contact-right">
+      <form method="POST" >
+        <div class="form-row">
+            <input type="hidden" name = "freelancer" class="form-control" value={{request.user.id}}>
+            <div class="form-group col-md-6">
+              <div class="form-group">
+                <select name="reject_option" class="form-control" required>
+                  <option>Select Reason for rejecting..</option>
+                  <option vlaue="price_too_low">Price too Low</option>
+                  <option vlaue="only_per_project">Only Per Project</option>
+                  <option value="only_per_hour">Only Per Hour</option>
+                  <option value="not_suitable">Not Suitable for task</option>
+                </select>
+              </div>
+              <textarea type="text" rows="10" name = "reason" class="form-control" id="inputJobTitle" placeholder="Say why you are rejecting it...." required></textarea>
+            </div>
         </div>
+          <button type="submit" class="btns">Submit</button>
+      </form>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+  </div>
+</section>
 {% endblock content %}

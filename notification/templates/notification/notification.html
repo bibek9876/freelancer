@@ -1,12 +1,35 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<h2>
-    Notifications
-</h2>
-    {% for notification in notifications %}
-            <div class="notification">
-                <a href="{{ notification.link }}">{{ notification.message }}</a>
-            </div>
-    {% endfor %}
+
+
+<section class="profile freelancer">
+    <div class="container">
+       <div class="row">
+        {% for notification in freelancer %}
+        
+          <div class="col-6">
+              <div class="profile-image">
+                  <div class="image">
+                    {% if notification.profile_image %}
+                        <img class="img-fluid mx-auto d-block" src="{{notification.profile_image.url}}">
+                    {% else %}
+                        <img class="img-fluid mx-auto d-block" src="{% static 'user_logo.png' %}">
+                    {% endif %}
+                  </div>
+                  <div class="profile-content">
+                      <span>Graphic Designer</span>
+                      <h3>{{notification.first_name}}</h3>
+                      <p>{{notification.message}}</p>
+                      <a href="{{ notification.link }}" class="btns">View Bid</a>
+                      <a href="{% url "view_user" notification.id %}" class="btns">View User</a>
+  
+                  </div>
+              </div>
+          </div>
+        
+        {% endfor %}
+  </div>
+  </section>
+
 {% endblock content %}

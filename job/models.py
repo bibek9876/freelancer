@@ -81,25 +81,35 @@ class JobBid(models.Model):
     freelancer = models.ForeignKey(Account, null = True, related_name='freelancer', on_delete = models.CASCADE)
     client = models.ForeignKey(Account, null = True, related_name='client', on_delete = models.CASCADE)
     job = models.ForeignKey(Job, null = True, related_name='jobbid', on_delete = models.CASCADE)
-    requested_rate = models.IntegerField()
-    requested_hour = models.DecimalField(max_digits=5, decimal_places=2)
-    requested_completion_time = models.CharField(max_length=50)
+    rate = models.IntegerField()
+    price_per = models.CharField(max_length=50)
+    completion_time = models.DateField()
     status = models.CharField(max_length=50, default="not reviewed")
+    created_at = models.DateField(auto_now_add=True, blank=False, null=False)
+
+class JobApplies(models.Model):
+    freelancer = models.ForeignKey(Account, null = True, related_name='job_apply_freelancer', on_delete = models.CASCADE)
+    client = models.ForeignKey(Account, null = True, related_name='job_apply_client', on_delete = models.CASCADE)
+    job = models.ForeignKey(Job, null = True, related_name='job_apply', on_delete = models.CASCADE)
+    status = models.CharField(max_length=50, default="requested")
+    created_at = models.DateField(auto_now_add=True, blank=False, null=False)
     
 class AgreedJob(models.Model):
     freelancer = models.ForeignKey(Account, null = True, related_name='worker', on_delete = models.CASCADE)
     client = models.ForeignKey(Account, null = True, related_name='employer', on_delete = models.CASCADE)
     job = models.ForeignKey(Job, null = True, related_name='job', on_delete = models.CASCADE)
     agreed_rate = models.IntegerField()
-    agreed_hour = models.DecimalField(max_digits=5, decimal_places=2)
+    agreed_price_per = models.CharField(max_length=50)
     agreed_completion_time = models.CharField(max_length=50)
+    created_at = models.DateField(auto_now_add=True, blank=False, null=False)
     
 class RejectionReason(models.Model):
     reason = models.CharField(max_length=500, null=False, blank=False)
+    reject_option = models.CharField(max_length=500, null=False, blank=False)
     freelancer = models.ForeignKey(Account, null = True, related_name='freelancer1', on_delete = models.CASCADE)
     client = models.ForeignKey(Account, null = True, related_name='client1', on_delete = models.CASCADE)
     job = models.ForeignKey(Job, null=False, related_name="job1", on_delete=models.CASCADE)
-    
+    created_at = models.DateField(auto_now_add=True, blank=False, null=False)
 
 @receiver(post_delete, sender=JobCategories)
 def submission_delete(sender, instance, **kwargs):
@@ -112,3 +122,11 @@ class Contact(models.Model):
     phone=PhoneNumberField(blank=True)
     email=models.EmailField(unique=False)
     message=models.TextField()
+    created_at = models.DateField(auto_now_add=True, blank=False, null=True)
+    
+    
+class UserPayment(models.Model):
+    job_agreed = models.ForeignKey(AgreedJob, on_delete=models.CASCADE)
+    payment_bool = models.BooleanField(default=False)
+    stripe_checkout_id = models.CharField(max_length=500)
+    created_at = models.DateField(auto_now_add=True)

@@ -7,6 +7,10 @@ class PostJob(forms.ModelForm):
         model =Job
         fields = ('user','job_title', 'image', 'price_per', 'project_length', 'rate', 'description', 'completion_time', 'category', 'freelancer_experience')
     
+class ApplyJob(forms.ModelForm):
+    class Meta:
+        model= Job
+        fields = ('rate', 'completion_time', 'price_per')
         
 class EditJob(forms.ModelForm):
     class Meta:
@@ -23,14 +27,14 @@ class EditJob(forms.ModelForm):
 class RequestBid(forms.ModelForm):
     class Meta:
         model = JobBid
-        fields = ('freelancer', 'client', 'requested_rate', 'requested_hour', 'requested_completion_time')
+        fields = ('freelancer', 'client', 'rate', 'price_per', 'completion_time')
         
 class AcceptBid(forms.ModelForm):
     class Meta:
         model = AgreedJob
-        fields = ('agreed_rate', 'agreed_hour', 'agreed_completion_time',)
+        fields = ('agreed_rate', 'agreed_price_per', 'agreed_completion_time',)
         
 class RejectBid(forms.ModelForm):
     class Meta:
         model = RejectionReason
-        fields = ('reason',)
+        fields = ('reason','reject_option',)

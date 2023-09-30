@@ -9,7 +9,7 @@
  *  Owl Carousel - Core
  */
 
-.owl-carousel {
+ .owl-carousel {
     width: 100%;
     -webkit-tap-highlight-color: transparent;
     /* position relative and z-index fix webkit rendering fonts issue */

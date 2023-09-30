@@ -2,25 +2,36 @@
 
 {% block content %}
 
-<h2>Requested bid</h2>
+<section class="contact3 post-job">
+  <div class="container"> 
+    <h2>Bid Rejection</h2>
+    <div class="contact-right">
+      <form method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputJobTitle">Rate</label>
+              <input type="text" name = "agreed_rate" class="form-control" id="inputJobTitle" placeholder="Rate" value={{bid_data.rate}} >
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputRate">Price per</label>
+              <select name="agreed_price_per" class="form-control">
+                <option {% if bid_data.price_per == "per_project" %}"selected"{% endif %} value="per_project">Per Project</option>
+                <option {% if bid_data.price_per == "per_hour" %}"selected"{% endif %} value="per_hour">Per Hour</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputRate">Completion Time</label>
+                <input type="integer" name = "agreed_completion_time" class="form-control" id="inputRate" placeholder="Completion Time" value={{bid_data.completion_time.day}}-{{bid_data.completion_time.month}}-{{bid_data.completion_time.year}} >
+              </div>    
+            </div>
+            <a href="{% url 'checkout' bid_data.job_id %}" class="btns">Accept</a> 
+            <br>
+            <a class="btns" href="{% url 'reject_bid' job_bid_id bid_data.freelancer_id %}"> Reject</a>
+      </form>
+    </div>
+  </div>
+</section>
 
-<form method="POST">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="inputJobTitle">Rate</label>
-          <input type="text" name = "agreed_rate" class="form-control" id="inputJobTitle" placeholder="Rate" value={{bid_data.requested_rate}} >
-        </div>
-        <div class="form-group col-md-6">
-          <label for="inputRate">Hour</label>
-          <input type="integer" name = "agreed_hour" class="form-control" id="inputRate" placeholder="Hour" value={{bid_data.requested_hour}} >
-        </div>
-        <div class="form-group col-md-6">
-            <label for="inputRate">Completion Time</label>
-            <input type="integer" name = "agreed_completion_time" class="form-control" id="inputRate" placeholder="Completion Time" value={{bid_data.requested_completion_time}} >
-          </div>    
-        </div>
-        <button type="submit" class="btn btn-primary">Accept</button>
-        <a class="btn btn-primary" href="{% url 'reject_bid' job_bid_id bid_data.freelancer_id %}"> Reject</a>
-</form>
+
 
 {% endblock content %}

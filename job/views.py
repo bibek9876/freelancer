@@ -1,9 +1,8 @@
 
 import os
-import pdb
 from django.shortcuts import render, redirect, get_object_or_404
-from job.forms import PostJob, RequestBid, AcceptBid, RejectBid, EditJob
-from job.models import Job, JobBid, AgreedJob, RejectionReason, JobCategories, JobSubCategories
+from job.forms import PostJob, RequestBid, AcceptBid, RejectBid, EditJob, ApplyJob
+from job.models import Job, JobBid, AgreedJob, RejectionReason, JobCategories, JobSubCategories, JobApplies, UserPayment
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, JsonResponse
 from account.models import Account
@@ -15,6 +14,10 @@ from django.core.management.color import no_style
 from django.db import connection
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+import stripe
+from django.conf import settings
 # Create your views here.
 
 def must_authenticate(request):
@@ -65,7 +68,6 @@ def post_job(request):
 def edit_jobs(request, job_id):
     context={}
     job = Job.objects.get(id=job_id)
-    pdb.set_trace()
     if request.POST:
         form = EditJob(request.POST)
         if form.is_valid():
@@ -147,67 +149,164 @@ def apply_job(request, job_id):
     except Job.DoesNotExist:
         raise Http404("No job matches the given query.")
     context["job"] = job_detail
-    
-    get_job = Job.objects.get(id = job_id)
-    form = PostJob(request.POST)
-    if form.is_valid():
-        get_job.rate = request.POST['rate']
-        get_job.hour = request.POST['hour']
-        get_job.completion_time = request.POST['completion_time']
-        get_job.save()
-    else:
-        form = PostJob()
-        context["post_job_form"] = form
-        
-    return render(request, 'job/apply_jobs.html', context)
-@login_required
-@csrf_exempt
-def bid_job(request, job_id):
-    context={}
-    job = Job.objects.get(id = job_id)
-    client_id = job.user_id
+    client_id = job_detail.user_id
     context['client_id'] = client_id
-    context['job'] = job
-    if Notification.objects.all().count() > 0:
-        notification = Notification.objects.all().order_by("-id")[0]
-        notification_count = notification.id+1
-    else:
-        sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Notification])
-        with connection.cursor() as cursor:
-            for sql in sequence_sql:
-                cursor.execute(sql)
-        notification_count = 1
+    # get_job = Job.objects.get(id = job_id)
     if request.POST:
-        form = RequestBid(request.POST)
-        if form.is_valid():
-            a = form.save(commit=False)
-            a.job_id = job_id
-            a.save()
-            job_bid_id = JobBid.objects.all().order_by("-id")[0].id
-            username = request.user.username
-            sender = request.user.id
-            receiver = client_id
-            message = "{} has applied a bid to a task {}.".format(username,job.job_title)
-            link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
-            notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
-            notification.save()
+        if request.POST.get('rate'): #Bidding job
+            
+            if Notification.objects.all().count() > 0:
+                notification = Notification.objects.all().order_by("-id")[0]
+                notification_count = notification.id+1
+            else:
+                sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Notification])
+                with connection.cursor() as cursor:
+                    for sql in sequence_sql:
+                        cursor.execute(sql)
+                notification_count = 1
+            form = RequestBid(request.POST)
+            if form.is_valid():
+                a = form.save(commit=False)
+                a.job_id = job_id
+                a.save()
+                job_bid_id = JobBid.objects.all().order_by("-id")[0].id
+                username = request.user.username
+                sender = request.user.id
+                receiver = client_id
+                message = "{} has applied a bid to a task {}.".format(username,job_detail.job_title)
+                link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
+                notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+                notification.save()
+                return redirect('view_job')
+            else:
+                context['bid_job'] = form
+        #end of bidding job
+        
+        # start of apply job
+        else: 
+            job_apply = JobApplies.objects.create(
+                client_id=client_id,
+                freelancer_id = request.user.id,
+                job_id = job_id,
+                status = "requested"
+            )
+            job_apply.save()
             return redirect('view_job')
-        else:
-            context['bid_job'] = form
-    else:
-        form = RequestBid()
-        context['bid_job'] = form
-    return render(request, 'job/bid_job.html', context)
+        # end of apply job
+    return render(request, 'job/apply_jobs.html', context)
+
+# @login_required
+# @csrf_exempt
+# def bid_job(request, job_id):
+#     context={}
+#     job = Job.objects.get(id = job_id)
+#     client_id = job.user_id
+#     context['client_id'] = client_id
+#     context['job'] = job
+#     if Notification.objects.all().count() > 0:
+#         notification = Notification.objects.all().order_by("-id")[0]
+#         notification_count = notification.id+1
+#     else:
+#         sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Notification])
+#         with connection.cursor() as cursor:
+#             for sql in sequence_sql:
+#                 cursor.execute(sql)
+#         notification_count = 1
+#     if request.POST:
+#         form = RequestBid(request.POST)
+#         if form.is_valid():
+#             a = form.save(commit=False)
+#             a.job_id = job_id
+#             a.save()
+#             job_bid_id = JobBid.objects.all().order_by("-id")[0].id
+#             username = request.user.username
+#             sender = request.user.id
+#             receiver = client_id
+#             message = "{} has applied a bid to a task {}.".format(username,job.job_title)
+#             link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
+#             notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+#             notification.save()
+#             return redirect('view_job')
+#         else:
+#             context['bid_job'] = form
+#     else:
+#         form = RequestBid()
+#         context['bid_job'] = form
+#     return render(request, 'job/bid_job.html', context)
+
+
+def checkout(request, job_id):
+    context = {}
+    job = Job.objects.get(id=job_id)
+    context['job_id'] = job_id
+    context['job'] = job
+    # 
+    return render(request, 'payment/payment.html', context)
+
+def checkout_session(request):
+    job_details = Job.objects.get(id=request.POST.get('job_id'))
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    if request.method == 'POST':
+        product = stripe.Product.create(
+            name=job_details.job_title,
+            description=job_details.description,
+            type='service',  # You can specify 'service', 'good', or 'sku'
+         )
+        price = stripe.Price.create(
+            unit_amount = int(job_details.rate) * 100,
+            currency= 'AUD',
+            product = product.id
+        )
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types = ['card'],
+            line_items = [
+                {
+                    'price': price.id,
+                    'quantity': 1,
+                },
+            ],
+            mode = 'payment',
+            customer_creation = 'always',
+            success_url= settings.REDIRECT_DOMAIN + '/jobs/payment/success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url = settings.REDIRECT_DOMAIN + '/payment_canceled',
+        )
+        return redirect(checkout_session.url, code=303)
+        # try:
+        #     # Get the token from the request
+        #     token = request.POST['stripeToken']
+            
+        #     # Create a charge
+        #     charge = stripe.Charge.create(
+        #         amount=1000,  # Amount in cents (e.g., $10.00)
+        #         currency='usd',
+        #         description='Example charge',
+        #         source=token,
+        #     )
+            
+        #     # Handle successful payment (e.g., update database, send email, etc.)
+        #     return redirect('payment_success')
+        # except stripe.error.CardError as e:
+        #     # Handle card errors (e.g., display an error message)
+        #     return JsonResponse({'error': e.user_message})
+        # except Exception as e:
+        #     # Handle other errors
+        #     return JsonResponse({'error': 'An error occurred.'})
+    return render(request, 'payment/payment.html')
 
 @login_required
 @csrf_exempt
 def view_bid(request, job_bid_id, notification_id):
     context={}
     user = request.user
+    
     if user.user_type != "client":
         return render(request, 'home/not_a_client.html')
     else:
         bid_data = JobBid.objects.get(id=job_bid_id)
+        job_data = Job.objects.filter(id=bid_data.job_id).select_related() 
+        notification = Notification.objects.get(id = notification_id)
+        freelancer_details = Account.objects.get(id=notification.sender_id)
+        context["freelancer_details"] = freelancer_details
         job_id = bid_data.job_id
         agreed_job = AgreedJob.objects.filter(job_id=job_id)
         if agreed_job.count() < 1:
@@ -218,6 +317,7 @@ def view_bid(request, job_bid_id, notification_id):
                 notification.read = True
                 notification.save()
             #Approving jobs
+            
             if request.POST:
                 form = AcceptBid(request.POST)
                 job = Job.objects.get(id=job_id)
@@ -258,6 +358,22 @@ def view_bid(request, job_bid_id, notification_id):
         context['job_bid_id'] = job_bid_id
         return render(request, 'job/view_bid.html', context)
 
+def payment_successful(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    checkout_session_id = request.GET.get('session_id', None)
+    session = stripe.checkout.Session.retrieve(checkout_session_id)
+    customer = stripe.Customer.retrieve(session.customer)
+    user_id = request.user.id
+    user_payment = UserPayment.objects.get(app_user = user_id)
+    user_payment
+    return render(request, 'payment/successful_payment.html')
+
+def payment_canceled(request):
+    return render(request, 'payment/failure_payment.html')
+
+def stripe_webhook(reqeust):
+    pass
+
 @csrf_exempt
 def reject_bid(request, job_bid_id, freelancer_id):
     context={}
@@ -272,6 +388,7 @@ def reject_bid(request, job_bid_id, freelancer_id):
         a.freelancer_id = freelancer_id
         a.job_id = job_id
         a.reason = request.POST['reason']
+        a.reject_option = request.POST['reject_option']
         a.save()
         
         #changing status in job bid table
@@ -282,7 +399,7 @@ def reject_bid(request, job_bid_id, freelancer_id):
         count = Notification.objects.all().order_by("-id")[0]
         notification_count = count.id+1
         message = "{} has rejected your bid on a task {}.".format(request.user.username, job_title)
-        link = reverse('bid_job', args=[str(job_id)])
+        link = reverse('apply_job', args=[str(job_id)])
         notification = Notification(message=message, receiver_id=freelancer_id, sender_id=client_id, link=link)
         notification.save()
         return redirect('view_job')

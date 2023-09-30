@@ -62,12 +62,12 @@
                               <a href={% url 'view_job' %}>Show your jobs</a>
                             </li>
                             
-                            <li><a href="{% url "freelancer_list"  %}">Freelancers'</a></li>
+                            <li><a href="{% url "freelancer_list"  %}">Freelancers</a></li>
                             <li><a href="{% url "notification" request.user.id %}">Notifications</a></li>
                             <li><a href={% url 'post_job' %}>Post Jobs</a></li>
                           {% else %}
                             <li><a href="{% url "view_job" %}">Jobs</a></li>
-                            <li><a  href="apply-jobs.html">Apply for Job</a></li>
+                            <li><a  href="#">Dashboard</a></li>
                         
                         
                           {% endif %}

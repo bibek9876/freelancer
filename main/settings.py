@@ -164,3 +164,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+STRIPE_PUBLIC_KEY =""
+STRIPE_SECRET_KEY = "sk_test_51NmU6RG9aTJ7zyFhwMcTbOdMMDRxIocWUYTH4YQWGHSGsl6IJ7YGjfPzVXdOTcFINdBV339ZA7kZEUl9mpV2rEFx008QFs15nQ"
+STRIPE_WEBHOOK_SECRET = "" 
+REDIRECT_DOMAIN = "http://127.0.0.1:8000"

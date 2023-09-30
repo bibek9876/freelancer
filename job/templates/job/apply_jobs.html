@@ -2,30 +2,75 @@
 
 {% block content %}
 
-<h2 for="inputJobTitle">{{job.job_title}}</h2>
-<hr>
-    <form method="POST">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="inputJobTitle">Rate</label>
-              <input type="text" name = "rate" class="form-control" id="inputJobTitle" placeholder="Rate">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="inputRate">Hour</label>
-              <input type="integer" name = "hour" class="form-control" id="inputRate" placeholder="Hour">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="inputRate">Completion Time</label>
-                <input type="integer" name = "completion_time" class="form-control" id="inputRate" placeholder="Completion Time">
-              </div>    
-            </div>
-            <button type="submit" class="btn btn-primary">Bid</button>
-    </form>
-    {% for job in post_job_form %}
-        {% for error in job.errors %}
-        <p style="color: red">{{ error }}</p>
-        {% endfor %}
 
-  {% endfor %}
+
+<section class="login1">
+  <div class="container">
+      <div class="login-heading">
+          <h1>Apply Job</h1>
+      </div>
+  </div>
+</section>
+
+<section class="job-detail1">
+  <div class="container">
+    <div class="row">
+        <div class="col-8">
+          <div class="detail-left">
+            <h2>{{job.job_title}}</h2>
+            <img src="{{job.image.url}}" alt="image" title="image">
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="detail-right">
+            <h2> Apply Form</h2>
+            <form method="POST" action="{% url "apply_job" job.id %}">
+              <input type="hidden" name = "freelancer" class="form-control" value={{request.user.id}}>
+              <input type="hidden" name = "client" class="form-control" value={{client_id}}>
+              <div class="form-row">
+                <input type="hidden" name = "user" class="form-control" value={{user}}>
+                <div class="form-group col-md-6">
+                  <label for="inputRate">Rate</label>
+                  <input type="text" name = "rate" class="form-control" id="inputRate" placeholder="Rate" value={{job.rate}} disabled>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputPayPer">Pay per</label>
+                  <select name="price_per" class="form-control" id="inputPayPer" disabled>
+                    <option {% if job.price_per == "per_project" %}"selected"{% endif %} value="per_project">Per Project</option>
+                    <option {% if job.price_per == "per_hour" %}"selected"{% endif %} value="per_hour">Per Hour</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputCompletionTime">Completion Time</label>
+                  <input type="integer" name = "completion_time" class="form-control" id="inputCompletionTime" placeholder="Completion Time" value={{job.completion_time.year}}-{{job.completion_time.day}}-{{job.completion_time.month}} disabled>
+                </div>
+              </div>
+              <button type="submit" class="btns">Apply</button>
+            </form>
+            <div class="account">
+              <p>Want to change offer? 
+                <a onClick="onBid()" href="javascript:void(0)" id="bid">Click Here</a>
+              </p>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+
+  <script>
+    function onBid(){
+      document.getElementById("inputRate").removeAttribute("disabled");
+      document.getElementById("inputPayPer").removeAttribute("disabled");
+      document.getElementById("inputCompletionTime").removeAttribute("disabled");
+    }
+
+    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+      document.getElementById('inputRate').disabled = true;
+      document.getElementById('inputPayPer').disabled = true;
+      document.getElementById('inputCompletionTime').disabled = true;
+    }
+  </script>
 
 {% endblock content %}

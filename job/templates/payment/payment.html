@@ -1,0 +1,41 @@
+{% comment %} {% extends "base.html" %}
+{% block content %}
+<form action="{% url 'checkout_session' %}" method="POST" id="payment-form">
+    {% csrf_token %}
+    <div id="card-element"></div>
+    <button id="submit-button">Pay Now</button>
+  </form>
+  
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    var stripe = Stripe('pk_live_51NmU6RG9aTJ7zyFhpYVRgOS4BGWX2YT0DYNDXZld3Xd3IiSNTatcb0VM1k1VrEQH6V7sFyINFFyCpd7l7VVj5Ksq00fx35qpt1');
+    var elements = stripe.elements();
+    var cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+  </script>
+{% endblock content %} {% endcomment %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Buy cool new product</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <section>
+      <div class="product">
+        <img src="{{job.image.url}}" alt="{{job.job_title}}" />
+        <div class="description">
+          <h3>{{job.job_title}}</h3>
+          <h5>${{job.rate}}</h5>
+        </div>
+      </div>
+      <form action="{% url "checkout_session" %}" method="POST">
+        {% csrf_token %}
+        <input hidden type="text" value="{{job_id}}" name="job_id">
+        <button type="submit" id="checkout-button">Checkout</button>
+      </form>
+    </section>
+  </body>
+</html>

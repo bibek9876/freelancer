@@ -1,5 +1,4 @@
 import os
-import pdb
 from django.shortcuts import render, redirect
 from job.models import Job, JobSubCategories
 from account.models import Account
@@ -30,7 +29,6 @@ def home_page(request):
 def search_job(request):
     context = {}
     jobs = Job.objects.all()
-    pdb.set_trace()
     categories = JobSubCategories.objects.all()
     query = request.GET.get('query')
     if request.GET.get('query') != "" and request.GET.get('query') is not None:
@@ -61,7 +59,6 @@ def search_job(request):
     if request.GET.get('category') != "" and request.GET.get('category') is not None:
         query = request.GET.get('category')
         jobs = jobs.filter(category__sub_category_name__contains = query)
-    pdb.set_trace()
     
     # paggination
     page = request.GET.get("page")

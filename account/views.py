@@ -18,6 +18,7 @@ from django.contrib import messages
 from uuid import uuid4
 from django.urls import reverse
 from account.decorators import admin_required
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -271,3 +272,25 @@ def build_resume(request, user_id):
             context['form'] = form
         context['user'] = user
     return render(request, 'account/build_resume.html', context)
+
+
+# stripe.api_key = settings.STRIPE_SECRET_KEY
+# def checkout_session(self, request, *args, **kwargs):
+#     try:
+#         checkout_session = stripe.checkout.Session.create(
+#             line_items=[
+#                 {
+#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+#                     'price': '{{PRICE_ID}}',
+#                     'quantity': 1,
+#                 },
+#             ],
+#             mode='payment',
+#             success_url=YOUR_DOMAIN + '/success.html',
+#             cancel_url=YOUR_DOMAIN + '/cancel.html',
+#             automatic_tax={'enabled': True},
+#         )
+#     except Exception as e:
+#         return str(e)
+
+#     return redirect(checkout_session.url, code=303)
