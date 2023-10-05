@@ -1,0 +1,71 @@
+
+
+    <div class="col-4">
+        <div class="search-filter">
+            <div class="filter-box">
+                <h3>Search</h3>
+                <form method="GET" action="{% url "search_job" %}">
+                    <input class="form-control" type="text" placeholder="Search" name="query">
+                </form>
+            </div>  
+            <hr>
+            <form method="GET" action="{% url "search_job" %}">
+                <div class="filter-box"><h3>Category</h3>
+                    <select name="category" class="form-control">
+                        <option value="">Select...</option>
+                        {% for category in categories %}
+                            <option value={{category.sub_category_name}}>{{category.sub_category_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <hr>
+                <div class="filter-box">
+                    <h3>Project Price</h3>
+                    <div class="range-slider">
+                        <input type="text" class="js-range-slider" value="" />
+                    </div>
+                </div>
+                <hr>
+                <div class="filter-box">
+                    <h3>Deadline</h3>
+                    <div class="job-cate">
+                        <input type="radio" name="1_month">
+                        <h4>More than 1 Month</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="3_month">
+                        <h4>More than 3 Month</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="3_6_month">
+                        <h4>3 to 6 Month</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="6_month">
+                        <h4>More than 6 Month</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="1_year">
+                        <h4>More than year</h4>
+                    </div>
+                </div>
+                <hr>
+                <div class="filter-box">
+                    <h3>Project Length</h3>
+                    <div class="job-cate">
+                        <input type="radio" name="project_length" value="small">
+                        <h4>Small Project</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="project_length" value="medium">
+                        <h4>Medium Project</h4>
+                    </div>
+                    <div class="job-cate">
+                        <input type="radio" name="project_length" value="large">
+                        <h4>Large Project</h4>
+                    </div>
+                </div>
+                <button type="submit" class="btns">Apply</button>
+            </form>
+        </div>
+    </div>

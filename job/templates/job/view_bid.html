@@ -24,7 +24,7 @@
                 <input type="integer" name = "agreed_completion_time" class="form-control" id="inputRate" placeholder="Completion Time" value={{bid_data.completion_time.day}}-{{bid_data.completion_time.month}}-{{bid_data.completion_time.year}} >
               </div>    
             </div>
-            <a href="{% url 'checkout' bid_data.job_id %}" class="btns">Accept</a> 
+            <a href="{% url 'checkout' bid_data.job_id bid_data.id notification_id  %}" class="btns">Accept</a> 
             <br>
             <a class="btns" href="{% url 'reject_bid' job_bid_id bid_data.freelancer_id %}"> Reject</a>
       </form>

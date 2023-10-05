@@ -34,6 +34,8 @@
       <form action="{% url "checkout_session" %}" method="POST">
         {% csrf_token %}
         <input hidden type="text" value="{{job_id}}" name="job_id">
+        <input hidden type="text" value="{{job_bid_id}}" name="job_bid_id">
+        <input hidden type="text" value="{{notification_id}}" name="notification_id">
         <button type="submit" id="checkout-button">Checkout</button>
       </form>
     </section>

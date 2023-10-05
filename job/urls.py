@@ -14,9 +14,9 @@ urlpatterns = [
     path("bid/request/<job_bid_id>/<notification_id>", views.view_bid, name='view_bid'),
     path("bid/reject/<job_bid_id>/<freelancer_id>", views.reject_bid, name='reject_bid'),
     # Payment
-    path("payment/<job_id>", views.checkout, name="checkout"),
+    path("payment/<job_id>/<bid_id>/<notification_id>", views.checkout, name="checkout"),
     path("payment/checkout/", views.checkout_session, name="checkout_session"),
-    path("payment/success/", views.payment_successful, name="payment_successful"),
+    path("payment_checkout_success/", views.payment_successful, name="payment_successful"),
     path("payment/cancelled/", views.payment_canceled, name="payment_canceled"),
     path('stripe_webhook', views.stripe_webhook, name='stripe_webhook'),
 ]

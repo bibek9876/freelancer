@@ -25,10 +25,9 @@
                             <li> <a class="btns" href={% url 'apply_job' job.id %}>Apply</a></li>
                         </ul>
                     {% else %}
-                        <ul>
-                            <li> <a href="{% url 'edit_job' job.id %}">Edit</a></li> 
-                            <li> <a href="{% url 'delete_job' job.id %}">Delete</a></li> 
-                        </ul>
+                            <li> <a class="btns" href="{% url 'edit_job' job.id %}">Edit</a></li> 
+                            <br>
+                            <li> <a class="btns" href="{% url 'delete_job' job.id %}">Delete</a></li> 
                     {% endif %}
                 </div>
             </div>

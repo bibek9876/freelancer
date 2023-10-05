@@ -32,7 +32,7 @@ class RequestBid(forms.ModelForm):
 class AcceptBid(forms.ModelForm):
     class Meta:
         model = AgreedJob
-        fields = ('agreed_rate', 'agreed_price_per', 'agreed_completion_time',)
+        fields = ()
         
 class RejectBid(forms.ModelForm):
     class Meta:

@@ -18,7 +18,7 @@
                     {% endif %}
                   </div>
                   <div class="profile-content">
-                      <span>Graphic Designer</span>
+                      <span>{% if notification.read == True %} Viewed {% else %}Not Read{% endif %}</span>
                       <h3>{{notification.first_name}}</h3>
                       <p>{{notification.message}}</p>
                       <a href="{{ notification.link }}" class="btns">View Bid</a>

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from job.forms import PostJob, RequestBid, AcceptBid, RejectBid, EditJob, ApplyJob
 from job.models import Job, JobBid, AgreedJob, RejectionReason, JobCategories, JobSubCategories, JobApplies, UserPayment
 from django.views.decorators.csrf import csrf_exempt
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from account.models import Account
 from notification.models import Notification
 from django.urls import reverse
@@ -18,6 +18,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import stripe
 from django.conf import settings
+import time
+
 # Create your views here.
 
 def must_authenticate(request):
@@ -235,16 +237,20 @@ def apply_job(request, job_id):
 #     return render(request, 'job/bid_job.html', context)
 
 
-def checkout(request, job_id):
+def checkout(request, job_id, bid_id, notification_id):
     context = {}
     job = Job.objects.get(id=job_id)
+    job = JobBid.objects.get(id=bid_id)
     context['job_id'] = job_id
+    context['job_bid_id'] = bid_id
     context['job'] = job
+    context['notification_id'] = notification_id
     # 
     return render(request, 'payment/payment.html', context)
 
 def checkout_session(request):
     job_details = Job.objects.get(id=request.POST.get('job_id'))
+    job_bid_details = JobBid.objects.get(id=request.POST.get('job_bid_id'))
     stripe.api_key = settings.STRIPE_SECRET_KEY
     if request.method == 'POST':
         product = stripe.Product.create(
@@ -253,7 +259,7 @@ def checkout_session(request):
             type='service',  # You can specify 'service', 'good', or 'sku'
          )
         price = stripe.Price.create(
-            unit_amount = int(job_details.rate) * 100,
+            unit_amount = int(job_bid_details.rate) * 100,
             currency= 'AUD',
             product = product.id
         )
@@ -266,11 +272,20 @@ def checkout_session(request):
                 },
             ],
             mode = 'payment',
+            metadata = {'job_id': job_details.id,
+                        'job_bid_id': job_bid_details.id,
+                        'agreed_rate': job_bid_details.rate,
+                        'agreed_completion_time': job_bid_details.completion_time,
+                        'agreed_price_per': job_bid_details.price_per,
+                        'notification_id': request.POST.get('notification_id'),
+                        'user_type': request.user.user_type,
+                        'user_id': request.user.id,
+                        },
             customer_creation = 'always',
-            success_url= settings.REDIRECT_DOMAIN + '/jobs/payment/success?session_id={CHECKOUT_SESSION_ID}',
+            success_url= settings.REDIRECT_DOMAIN + '/jobs/payment_checkout_success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url = settings.REDIRECT_DOMAIN + '/payment_canceled',
         )
-        return redirect(checkout_session.url, code=303)
+        return redirect(checkout_session.url, job_bid_details, code=303)
         # try:
         #     # Get the token from the request
         #     token = request.POST['stripeToken']
@@ -308,71 +323,102 @@ def view_bid(request, job_bid_id, notification_id):
         freelancer_details = Account.objects.get(id=notification.sender_id)
         context["freelancer_details"] = freelancer_details
         job_id = bid_data.job_id
-        agreed_job = AgreedJob.objects.filter(job_id=job_id)
-        if agreed_job.count() < 1:
-            query = JobBid.objects.raw('SELECT * from job_jobbid jb join job_job j on jb.job_id = j.id;')
-            job_title = query[0].job_title
-            notification = Notification.objects.get(id = notification_id)
-            if request.user.user_type == "client" and notification.read == False:
-                notification.read = True
-                notification.save()
-            #Approving jobs
+        # agreed_job = AgreedJob.objects.filter(job_id=job_id)
+        # if agreed_job.count() < 1:
+        #     query = JobBid.objects.raw('SELECT * from job_jobbid jb join job_job j on jb.job_id = j.id;')
+        #     job_title = query[0].job_title
+        #     notification = Notification.objects.get(id = notification_id)
+        #     if request.user.user_type == "client" and notification.read == False:
+        #         notification.read = True
+        #         notification.save()
             
-            if request.POST:
-                form = AcceptBid(request.POST)
-                job = Job.objects.get(id=job_id)
-                job_bid = JobBid.objects.get(id=job_bid_id)
-                if form.is_valid():
-                    #saving accepted jobs
-                    a = form.save(commit = False)
-                    a.client_id = notification.receiver_id
-                    a.freelancer_id = notification.sender_id
-                    a.job_id = bid_data.job_id
-                    a.save()
-                    
-                    #changing status in job table
-                    job.job_status = "assigned"
-                    job.save()
-                    
-                    #changing status in job bid table
-                    job_bid.status = "approved"
-                    job_bid.save()
-                    
-                    #saving notification for freelancer
-                    count = Notification.objects.all().order_by("-id")[0]
-                    notification_count = count.id+1
-                    sender = request.user.id
-                    receiver = notification.sender_id
-                    message = "{} has approved your bid on a task {}.".format(request.user.username, job_title)
-                    link = reverse('view_bid', args=[str(job_bid_id), str(notification_count)])
-                    notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
-                    notification.save()
-                    return redirect('view_job')
-                else:
-                    form = AcceptBid()
-                    context['form'] = form
-        else:
-            return redirect('view_job')
+            
+        # else:
+        #     return redirect('view_job')
         
         context['bid_data'] = bid_data
         context['job_bid_id'] = job_bid_id
+        context['notification_id'] = notification_id
         return render(request, 'job/view_bid.html', context)
 
 def payment_successful(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
-    checkout_session_id = request.GET.get('session_id', None)
-    session = stripe.checkout.Session.retrieve(checkout_session_id)
-    customer = stripe.Customer.retrieve(session.customer)
-    user_id = request.user.id
-    user_payment = UserPayment.objects.get(app_user = user_id)
-    user_payment
     return render(request, 'payment/successful_payment.html')
 
 def payment_canceled(request):
     return render(request, 'payment/failure_payment.html')
 
-def stripe_webhook(reqeust):
-    pass
+@csrf_exempt
+def stripe_webhook(request):
+    context = {}
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    time.sleep(10)
+    payload = request.body
+    signature_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, signature_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationerror as e:
+        return HttpResponse(status=400)
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        session_id = session.get('id', None)
+        
+        
+        #Approving jobs after payment
+        query = JobBid.objects.raw('SELECT * from job_jobbid jb join job_job j on jb.job_id = j.id;')
+        job_title = query[0].job_title
+        notification = Notification.objects.get(id = session["metadata"]["notification_id"])
+        agreed_job = AgreedJob.objects.filter(job_id=session["metadata"]["job_id"])
+        if agreed_job.count() < 1:
+            if session["metadata"]["user_type"] == "client" and notification.read == False:
+                notification.read = True
+                notification.save()
+                
+        form = AcceptBid(request.POST)
+        job = Job.objects.get(id=session["metadata"]["job_id"])
+        job_bid = JobBid.objects.get(id=session["metadata"]["job_bid_id"])
+        if form.is_valid():
+            #saving accepted jobs
+            a = form.save(commit = False)
+            a.client_id = notification.receiver_id
+            a.agreed_rate = session["metadata"]["agreed_rate"]
+            a.agreed_price_per = session["metadata"]["agreed_price_per"]
+            a.agreed_completion_time = session["metadata"]["agreed_completion_time"]
+            a.freelancer_id = notification.sender_id
+            a.job_id = session["metadata"]["job_id"]
+            a.save()
+                        
+            #changing status in job table
+            job.job_status = "assigned"
+            job.save()
+                        
+            #changing status in job bid table
+            job_bid.status = "approved"
+            job_bid.save()
+                        
+            #saving notification for freelancer
+            count = Notification.objects.all().order_by("-id")[0]
+            notification_count = count.id+1
+            sender = session["metadata"]["user_id"]
+            receiver = notification.sender_id
+            message = "{} has approved your bid on a task {}.".format(request.user.username, job_title)
+            link = reverse('view_bid', args=[str(session["metadata"]["job_bid_id"]), str(notification_count)])
+            notification = Notification(message=message, receiver_id=receiver, sender_id=sender, link=link)
+            notification.save()
+            return redirect('view_job')
+        else:
+            form = AcceptBid()
+            context['form'] = form
+        time.sleep(15)
+    
+    return HttpResponse(status=200)
+        
+    
 
 @csrf_exempt
 def reject_bid(request, job_bid_id, freelancer_id):
