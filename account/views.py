@@ -19,6 +19,10 @@ from uuid import uuid4
 from django.urls import reverse
 from account.decorators import admin_required
 from django.http import JsonResponse
+from job.models import JobApplies, JobBid, AgreedJob, JobSubCategories, JobCategories, Job
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+from job.views import search_job
 
 # Create your views here.
 
@@ -191,6 +195,143 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
+def search_jobs(request,
+                page, 
+                job_data,
+               search_query="", 
+               min_price="", 
+               max_price="", 
+               deadline="", 
+               project_length="", 
+               category="",
+               ):
+    
+    context = {}
+    jobs = job_data
+    categories = JobSubCategories.objects.all()
+    
+    if search_query != "" and search_query is not None:
+        jobs = jobs.filter(Q(job_title__icontains=search_query) | Q(description__icontains=search_query)).distinct()
+    if min_price != "" and min_price is not None:
+        query=min_price
+        jobs = jobs.filter(rate__gte=query)
+        
+    if max_price != "" and max_price is not None:
+        query=max_price
+        jobs = jobs.filter(rate__lte=query)
+    
+    if deadline != "" and deadline is not None:
+        query = deadline
+        jobs = jobs.filter(
+            completion_time__year= deadline.split('-')[0],
+            completion_time__month= deadline.split('-')[1],
+            completion_time__day= deadline.split('-')[2],
+            )
+    
+    if project_length != "" and project_length is not None:
+        query = project_length
+        jobs = jobs.filter(
+            project_length__icontains = query
+        )
+    
+    if category != "" and category is not None:
+        query = category
+        jobs = jobs.filter(category__sub_category_name__contains = query)
+    
+    # paggination
+    
+    paginator = Paginator(jobs, 1)
+    pagination_data = paginator.get_page(page)
+    total_page = pagination_data.paginator.num_pages
+    try:
+        jobs = paginator.page(page)
+    except PageNotAnInteger:
+        jobs = paginator.page(1)
+    except EmptyPage:
+        jobs = paginator.page(paginator.num_pages)
+    
+    context['results'] = jobs
+    context['categories'] = categories
+    # context['query'] = query
+    context['last_page'] = total_page
+    context['pages'] = [n+1 for n in range(total_page)]
+    # context['result_count'] = Job.objects.all().count()
+    return render(request, 'home/search_result.html', context)
+
+
+def dashboard(request):
+    context = {}
+    user_id = request.user.id
+    job_bids = JobBid.objects.filter(freelancer_id = user_id)
+    agreed_jobs = AgreedJob.objects.filter(freelancer_id = user_id)
+    applied_jobs = JobApplies.objects.filter(freelancer_id = user_id)
+    
+    context["job_bid_count"] = job_bids.count()
+    context["agreed_job_count"] = agreed_jobs.count()
+    context["applied_job_count"] = applied_jobs.count()
+    return render(request, 'account/freelancer_dashboard.html', context)
+
+def agreed_jobs(request):
+    context={}
+    user_id = request.user.id
+    job_data = JobBid.objects.raw(f'select j.*, aj.agreed_rate, aj.agreed_completion_time, aj.agreed_price_per from job_job j join job_agreedjob aj on j.id=aj.job_id where aj.freelancer_id = {user_id};')
+    
+    page=request.GET.get('page')
+    paginator = Paginator(job_data, 5)
+    pagination_data = paginator.get_page(page)
+    total_page = pagination_data.paginator.num_pages
+    try:
+        job_data = paginator.page(page)
+    except PageNotAnInteger:
+        job_data = paginator.page(1)
+    except EmptyPage:
+        job_data = paginator.page(paginator.num_pages)
+    context["agreed_jobs"] = job_data
+    context['pages'] = [n+1 for n in range(total_page)]
+    return render(request, 'account/freelancer_agreed_jobs.html', context)
+    
+def applied_jobs(request):
+    context={}
+    user_id = request.user.id
+    job_data = JobBid.objects.raw(f'select j.*, aj.status from job_job j join job_jobapplies aj on j.id=aj.job_id where aj.freelancer_id = {user_id};')
+
+    page=request.GET.get('page')
+    paginator = Paginator(job_data, 5)
+    pagination_data = paginator.get_page(page)
+    total_page = pagination_data.paginator.num_pages
+    try:
+        job_data = paginator.page(page)
+    except PageNotAnInteger:
+        job_data = paginator.page(1)
+    except EmptyPage:
+        job_data = paginator.page(paginator.num_pages)
+    context["agreed_jobs"] = job_data
+    context['pages'] = [n+1 for n in range(total_page)]
+
+    context["applied_jobs"] = job_data
+    return render(request, 'account/freelancer_applied_jobs.html', context)
+    
+def job_bids(request):
+    context={}
+    user_id = request.user.id
+    job_data = JobBid.objects.raw(f'select j.*, aj.rate, aj.completion_time, aj.price_per from job_job j join job_jobbid aj on j.id=aj.job_id where aj.freelancer_id = {user_id};')
+
+    page=request.GET.get('page')
+    paginator = Paginator(job_data, 5)
+    pagination_data = paginator.get_page(page)
+    total_page = pagination_data.paginator.num_pages
+    try:
+        job_data = paginator.page(page)
+    except PageNotAnInteger:
+        job_data = paginator.page(1)
+    except EmptyPage:
+        job_data = paginator.page(paginator.num_pages)
+    context["agreed_jobs"] = job_data
+    context['pages'] = [n+1 for n in range(total_page)]
+
+    context["job_bids"] = job_data
+    return render(request, 'account/freelancer_job_bids.html', context)
+
 def view_user(request, user_id):
     context = {}
     user = request.user
@@ -272,25 +413,3 @@ def build_resume(request, user_id):
             context['form'] = form
         context['user'] = user
     return render(request, 'account/build_resume.html', context)
-
-
-# stripe.api_key = settings.STRIPE_SECRET_KEY
-# def checkout_session(self, request, *args, **kwargs):
-#     try:
-#         checkout_session = stripe.checkout.Session.create(
-#             line_items=[
-#                 {
-#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-#                     'price': '{{PRICE_ID}}',
-#                     'quantity': 1,
-#                 },
-#             ],
-#             mode='payment',
-#             success_url=YOUR_DOMAIN + '/success.html',
-#             cancel_url=YOUR_DOMAIN + '/cancel.html',
-#             automatic_tax={'enabled': True},
-#         )
-#     except Exception as e:
-#         return str(e)
-
-#     return redirect(checkout_session.url, code=303)

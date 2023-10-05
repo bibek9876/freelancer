@@ -25,6 +25,7 @@ def home_page(request):
     context["freelancers"] = freelancers
     return render(request, 'home/home.html', context)
 
+
 @csrf_exempt
 def search_job(request):
     context = {}

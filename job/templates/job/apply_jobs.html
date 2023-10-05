@@ -47,7 +47,7 @@
               </div>
               <button type="submit" class="btns">Apply</button>
             </form>
-            <div class="account">
+            <div class="account" id="offer">
               <p>Want to change offer? 
                 <a onClick="onBid()" href="javascript:void(0)" id="bid">Click Here</a>
               </p>
@@ -64,12 +64,14 @@
       document.getElementById("inputRate").removeAttribute("disabled");
       document.getElementById("inputPayPer").removeAttribute("disabled");
       document.getElementById("inputCompletionTime").removeAttribute("disabled");
+      document.getElementById('offer').style.display = 'none';
     }
 
     if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
       document.getElementById('inputRate').disabled = true;
       document.getElementById('inputPayPer').disabled = true;
       document.getElementById('inputCompletionTime').disabled = true;
+      
     }
   </script>
 

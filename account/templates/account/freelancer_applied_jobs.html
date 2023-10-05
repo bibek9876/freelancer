@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="login1">
+    <div class="container">
+        <div class="login-heading">
+            <h1>Applied</h1>
+        </div>
+    </div>
+</section>
+
+
+<section class="job1">
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                {% for job in applied_jobs %}
+                <div class="job-box">
+                    <div class="col-4">
+                        <div class="job-image">
+                            <a href="{% url "job_detail" job.id %}"> <img src="../../media/{{job.image}}" alt="image"
+                                    title="image"></a>
+                            <span>${{job.rate}} {% if job.price_per == "per_project" %}Per Project {% else %} Per
+                                Hour{% endif %}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="job-info">
+                            <a href="{% url "job_detail" job.id %}">
+                                <h3>{{job.job_title}}</h3>
+
+                            </a>
+
+                            <p>{{job.description}}</p>
+                            <div class="link">
+                                <a class="btn" href="{% url "job_detail" job.id %}">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="pagination">
+        <ul>
+            {% if total_page.has_previous %}
+                <li><a  href="{% url "applied_jobs" %}?page=1">First</i></a></li>
+                <li><a  href="{% url "applied_jobs" %}?page={{total_page.previous_page_number}}"><i class="fa fa-arrow-left"></i></a></li>
+            {% endif %}
+            {% for page in pages %}
+                <li><a href="{% url "applied_jobs" %}?page={{page}}">{{page}}</a></li>
+            {% endfor %}
+            {% if total_page.has_next %}
+                <li><a  href="{% url "applied_jobs" %}?page={{total_page.last_page_number}}"><i class="fa fa-arrow-left"></i></a></li>
+                <li><a  href="{% url "applied_jobs" %}?page={{last_page}}">Last</i></a></li>
+            {% endif %}
+        </ul>
+    </div>
+</section>
+
+{% endblock content %}

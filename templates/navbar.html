@@ -67,7 +67,7 @@
                             <li><a href={% url 'post_job' %}>Post Jobs</a></li>
                           {% else %}
                             <li><a href="{% url "view_job" %}">Jobs</a></li>
-                            <li><a  href="#">Dashboard</a></li>
+                            <li><a  href="{% url "dashboard" %}">Dashboard</a></li>
                         
                         
                           {% endif %}
