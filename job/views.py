@@ -135,11 +135,29 @@ def job_pagination(request, page):
 
 def job_details(request, job_id):
     context = {}
+    applied = False
+    bid = False
+    freelancer_job_apply = []
+    freelancer_job_bid = []
     try:
         job_detail = Job.objects.get(pk=job_id)
+        job_applies = JobApplies.objects.filter(job_id = job_id)
+        job_bid = JobBid.objects.filter(job_id = job_id)
+        for job in job_bid:
+            freelancer_job_bid.append(job.freelancer_id)
+        for job in job_applies:
+            freelancer_job_apply.append(job.freelancer_id)
+        if request.user.id in freelancer_job_apply:
+            applied = True
+        if request.user.id in freelancer_job_bid:
+            bid = True
+            
     except Job.DoesNotExist:
         raise Http404("No job matches the given query.")
     context["job"] = job_detail
+    context["applied"] = applied
+    context["bid"] = bid
+    context["offers"] = job_applies.count() + job_bid.count()
     return render(request, 'job/job_details.html', context)
 
 @login_required

@@ -22,7 +22,13 @@
 
                     {% if request.user.id != job.user_id %}
                         <ul>
-                            <li> <a class="btns" href={% url 'apply_job' job.id %}>Apply</a></li>
+                            {% if applied == True %}
+                                <li> <a class="btns" style="background-color:green;">Applied</a></li>
+                            {% elif bid == True %}
+                                <li> <a class="btns" style="background-color:green;">Bidded</a></li>
+                            {% else %}
+                                <li> <a class="btns" href={% url 'apply_job' job.id %}>Apply</a></li>
+                            {% endif %}
                         </ul>
                     {% else %}
                             <li> <a class="btns" href="{% url 'edit_job' job.id %}">Edit</a></li> 
@@ -33,43 +39,18 @@
             </div>
             <div class="col-4">
                 <div class="detail-right">
-                    <h2> Date Posted</h2>
-
+                    <h2> Date Posted:</h2>
+                    {{job.created_on}}
+                    <br>
+                    <br>
                     <ul>
                         <li>
-                            <h4>All</h4>
+                            <h4>Price: ${{job.rate}} {% if job.price_per == "per_project" %}Per Project {% else %} Per Hour{% endif %}</h4>
 
                             
                         </li>
-                        <li>
-                            <h4>Last Hours</h4>
+                    </ul><h2>{{offers}} {% if offers > 1 %}Offers Made {% else %}Offer Made{% endif %}</h2>
 
-                           
-                        </li>
-                        <li>
-                            <h4>Last 24 Hours</h4>
-
-                        
-                        </li>
-                    </ul><h2> Career Level</h2>
-
-                    <ul>
-                        <li>
-                            <h4>Manager</h4>
-
-                            
-                        </li>
-                        <li>
-                            <h4>Officer</h4>
-
-                           
-                        </li>
-                        <li>
-                            <h4>Student</h4>
-
-                        
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
